@@ -1,6 +1,10 @@
+"use client";
 import FAB from "@/components/FAB";
+import { useState } from "react";
 
 export default function CuraTreatment() {
+  const [costRangeIndex, setCostRangeIndex] = useState(0);
+  const costRanges = ["Any Price", "₹5,000 - ₹50,000", "₹50,000 - ₹1,00,000", "₹1,00,000 - ₹5,00,000"];
   return (
     <div className="px-6 lg:px-12 py-8 max-w-7xl mx-auto space-y-10">
       {/* Hero: Plain Language Summary */}
@@ -256,13 +260,23 @@ export default function CuraTreatment() {
             <span className="w-8 h-8 flex items-center justify-center material-symbols-outlined text-[20px] block leading-none">filter_alt</span>
             Estimated Cost Range:
           </div>
-          <div className="flex flex-wrap items-center gap-6">
-            {["Any Price", "₹5,000 - ₹50,000", "₹50,000 - ₹1,00,000", "₹1,00,000 - ₹5,00,000"].map((range, i) => (
-              <label key={range} className="flex items-center gap-2 cursor-pointer group">
-                <input type="radio" name="costRange" defaultChecked={i === 0} className="w-4.5 h-4.5 text-primary bg-surface-container border-outline-variant focus:ring-primary focus:ring-2 accent-primary transition-all cursor-pointer" />
-                <span className="text-sm font-semibold text-on-surface group-hover:text-primary transition-colors">{range}</span>
-              </label>
-            ))}
+          <div className="flex-1 max-w-md w-full ml-4">
+            <div className="flex justify-between items-center mb-2">
+              <span className="text-sm font-bold text-primary">{costRanges[costRangeIndex]}</span>
+            </div>
+            <input 
+              type="range" 
+              min="0" 
+              max={costRanges.length - 1} 
+              step="1" 
+              value={costRangeIndex}
+              onChange={(e) => setCostRangeIndex(Number(e.target.value))}
+              className="w-full h-2 bg-surface-container-high rounded-lg appearance-none cursor-pointer accent-primary" 
+            />
+            <div className="flex justify-between text-[10px] text-on-surface-variant mt-1 font-medium px-1">
+              <span>Any</span>
+              <span>₹5L+</span>
+            </div>
           </div>
         </div>
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">

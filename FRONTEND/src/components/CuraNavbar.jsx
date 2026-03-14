@@ -205,10 +205,10 @@ export default function CuraNavbar() {
             </div>
           </div>
           <div className="space-y-1">
-            <button className="w-full flex items-center gap-3 p-3 rounded-xl hover:bg-surface-container-low transition-colors text-left">
+            <Link href="/profile" className="w-full flex items-center gap-3 p-3 rounded-xl hover:bg-surface-container-low transition-colors text-left">
               <span className="material-symbols-outlined text-on-surface-variant">badge</span>
               <span className="text-sm font-medium">My Profile</span>
-            </button>
+            </Link>
             <button className="w-full flex items-center gap-3 p-3 rounded-xl hover:bg-surface-container-low transition-colors text-left">
               <span className="material-symbols-outlined text-on-surface-variant">history</span>
               <span className="text-sm font-medium">Activity Log</span>
@@ -218,10 +218,10 @@ export default function CuraNavbar() {
               <span className="text-sm font-medium">Help & Support</span>
             </button>
             <div className="pt-2 mt-2 border-t border-outline-variant/10">
-              <button className="w-full flex items-center gap-3 p-3 rounded-xl hover:bg-error/5 transition-colors text-left text-error">
+              <Link href="/" className="w-full flex items-center gap-3 p-3 rounded-xl hover:bg-error/5 transition-colors text-left text-error">
                 <span className="material-symbols-outlined">logout</span>
-                <span className="text-sm font-medium">Sign Out</span>
-              </button>
+                <span className="text-sm font-medium">Log Out</span>
+              </Link>
             </div>
           </div>
         </div>
