@@ -67,8 +67,34 @@ const verifyClaim = async (drug, sideEffect, claimText) => {
 
     // 4. Calculate credibility score with NLI integration
     const nliScore = verdictToScore(bsMeterResult.verdict);
-    const redditFrequency = 0.8; // Mock - would come from DB aggregation
-    const upvoteWeight = 0.5;    // Mock - would come from DB aggregation
+
+    // Query real Reddit data for frequency and upvote weight
+    const Comment = require('../models/Comment');
+    const Post = require('../models/Post');
+    const drugPosts = await Post.find({ query_drug: drug.toLowerCase() }).select('post_id');
+    const postIds = drugPosts.map(p => p.post_id);
+
+    let redditFrequency = 0;
+    let upvoteWeight = 0;
+
+    if (postIds.length > 0) {
+      const totalComments = await Comment.countDocuments({ post_id: { $in: postIds } });
+      // Count comments mentioning the side effect
+      const matchingComments = await Comment.countDocuments({
+        post_id: { $in: postIds },
+        text: { $regex: sideEffect, $options: 'i' }
+      });
+      // Normalize: frequency = ratio of comments mentioning the effect (capped at 1)
+      redditFrequency = totalComments > 0 ? Math.min(matchingComments / Math.max(totalComments * 0.1, 1), 1) : 0;
+
+      // Average upvotes of matching comments, normalized 0-1 (cap at 50 upvotes = 1.0)
+      const upvoteAgg = await Comment.aggregate([
+        { $match: { post_id: { $in: postIds }, text: { $regex: sideEffect, $options: 'i' } } },
+        { $group: { _id: null, avgUpvotes: { $avg: '$upvotes' } } }
+      ]);
+      const avgUpvotes = upvoteAgg.length > 0 ? upvoteAgg[0].avgUpvotes : 0;
+      upvoteWeight = Math.min(avgUpvotes / 50, 1);
+    }
 
     const score = calculateCredibility(fdaMatch, nliScore, redditFrequency, upvoteWeight);
 

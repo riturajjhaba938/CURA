@@ -17,14 +17,14 @@ const registerUser = async (req, res) => {
   try {
     const { name, email, password, state, district, gender, mobileNumber } = req.body;
 
-    if (!name || !email || !password || !state || !district || !gender || !mobileNumber) {
-      return res.status(400).json({ error: "Please add all fields" });
-    }
+    // Check if user exists (email or mobile number)
+    const userExists = await User.findOne({
+      $or: [{ email }, { mobileNumber }],
+    });
 
-    // Check if user exists
-    const userExists = await User.findOne({ email });
     if (userExists) {
-      return res.status(400).json({ error: "User already exists" });
+      const message = userExists.email === email ? "Email already exists" : "Mobile number already exists";
+      return res.status(400).json({ error: message });
     }
 
     // Create user
@@ -67,10 +67,6 @@ const loginUser = async (req, res) => {
   try {
     const { identifier, email, password } = req.body;
     const loginId = identifier || email;
-
-    if (!loginId || !password) {
-      return res.status(400).json({ error: "Please add all fields" });
-    }
 
     // Check for user email or mobile number
     const user = await User.findOne({
