@@ -10,6 +10,7 @@ const extractRoutes = require('./routes/extract.routes');
 const verifyRoutes = require('./routes/verify.routes');
 const bsMeterRoutes = require('./routes/bsMeter.routes');
 const anonymizeRoutes = require('./routes/anonymize.routes');
+const sentimentRoutes = require('./routes/sentiment.routes');
 
 const app = express();
 
@@ -29,6 +30,7 @@ app.use('/api/extract', extractRoutes);
 app.use('/api/verify', verifyRoutes);
 app.use('/api/bs-meter', bsMeterRoutes);
 app.use('/api/anonymize', anonymizeRoutes);
+app.use('/api/sentiment', sentimentRoutes);
 
 
 // Health check
