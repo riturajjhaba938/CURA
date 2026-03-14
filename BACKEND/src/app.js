@@ -34,10 +34,6 @@ const scrapeLimiter = rateLimit({
   message: { error: "Scrape limit exceeded. Please wait an hour before requesting again." }
 });
 
-// Database Connection Constants
-const PORT = process.env.PORT || 3000;
-const MONGODB_URI = process.env.MONGODB_URI || process.env.MONGO_URI;
-
 // Main Routes
 app.use("/api/scrape", scrapeLimiter, scrapeRoutes);
 app.use("/api/timeline", timelineRoutes);
@@ -53,22 +49,6 @@ app.use('/api/hospitals', hospitalsRoutes);
 app.get("/", (req, res) => {
   res.json({ status: "ok", message: "Drug Insights API is running" });
 });
-
-// Start Server Immediately
-app.listen(PORT, () => {
-  console.log(`Backend AI processing logic is running on port ${PORT}`);
-});
-
-// Connect to MongoDB in background
-if (MONGODB_URI) {
-  mongoose.connect(MONGODB_URI, { useNewUrlParser: true, useUnifiedTopology: true })
-    .then(() => {
-      console.log('Connected to MongoDB');
-    })
-    .catch(err => {
-      console.error('Failed to connect to MongoDB', err.message);
-    });
-}
 
 // Error Handler
 app.use(errorHandler);
