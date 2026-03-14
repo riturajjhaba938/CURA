@@ -61,7 +61,7 @@ export default function CuraSidebar({ expanded = false }) {
   }
 
   return (
-    <aside className="fixed left-0 top-16 bottom-0 w-[72px] hidden lg:flex flex-col items-center pt-6 pb-4 gap-2 bg-surface-container-low/80 backdrop-blur-sm border-r border-outline-variant/5 z-40">
+    <aside className="fixed left-0 top-20 bottom-0 w-[72px] hidden lg:flex flex-col items-center pt-6 pb-4 gap-2 bg-surface-container-low/80 backdrop-blur-sm border-r border-outline-variant/5 z-40">
       {navItems.map((item) => {
         const isActive = pathname === item.href;
         return (

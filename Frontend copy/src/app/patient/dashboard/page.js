@@ -88,7 +88,7 @@ export default function PatientDashboard() {
                 View Detailed History <span className="material-symbols-outlined text-sm">arrow_forward</span>
               </button>
             </div>
-            <div className="relative flex flex-col md:flex-row gap-8 justify-between">
+            <div className="relative flex flex-col md:flex-row gap-8 justify-between pt-12">
               <div className="hidden md:block absolute top-6 left-0 right-0 h-0.5 bg-surface-container-high z-0"></div>
               {[
                 { status: "Completed", title: "Initial Diagnosis", desc: "Comprehensive cognitive and vocal baseline established.", date: "August 12, 2024", active: false, progress: null },
@@ -99,7 +99,7 @@ export default function PatientDashboard() {
                   i === 2 ? "bg-surface-container-low border-t-4 border-outline-variant/30 grayscale opacity-60" :
                   "bg-surface-container-lowest antigravity-float border-t-4 " + (item.active ? "border-primary" : "border-primary/20")
                 }`}>
-                  <div className="absolute -top-10 left-1/2 -translate-x-1/2 hidden md:block">
+                  <div className="absolute -top-9 left-1/2 -translate-x-1/2 hidden md:block">
                     <div className={`w-6 h-6 rounded-full border-4 border-surface ${
                       item.active ? "bg-primary animate-pulse" : i === 0 ? "bg-primary ring-4 ring-primary/10" : "bg-outline-variant"
                     }`}></div>

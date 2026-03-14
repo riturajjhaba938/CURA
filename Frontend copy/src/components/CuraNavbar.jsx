@@ -2,49 +2,113 @@
 import Link from "next/link";
 import Image from "next/image";
 import { usePathname } from "next/navigation";
-import { useState } from "react";
+import { useState, useEffect, useRef } from "react";
+
+function TypewriterTagline() {
+  const tagline = "Cura: Mapping the journey you weren't told about.";
+  const [displayText, setDisplayText] = useState("");
+  const [isDeleting, setIsDeleting] = useState(false);
+  const [charIndex, setCharIndex] = useState(0);
+  const [showCursor, setShowCursor] = useState(true);
+
+  // Blinking cursor
+  useEffect(() => {
+    const cursorInterval = setInterval(() => {
+      setShowCursor((prev) => !prev);
+    }, 530);
+    return () => clearInterval(cursorInterval);
+  }, []);
+
+  // Typing & deleting logic
+  useEffect(() => {
+    let timeout;
+
+    if (!isDeleting && charIndex < tagline.length) {
+      // Typing forward
+      timeout = setTimeout(() => {
+        setDisplayText(tagline.slice(0, charIndex + 1));
+        setCharIndex(charIndex + 1);
+      }, 60 + Math.random() * 40); // slightly randomized for realism
+    } else if (!isDeleting && charIndex === tagline.length) {
+      // Pause at full text, then start deleting
+      timeout = setTimeout(() => {
+        setIsDeleting(true);
+      }, 2500);
+    } else if (isDeleting && charIndex > 0) {
+      // Deleting
+      timeout = setTimeout(() => {
+        setDisplayText(tagline.slice(0, charIndex - 1));
+        setCharIndex(charIndex - 1);
+      }, 30);
+    } else if (isDeleting && charIndex === 0) {
+      // Pause at empty, then start typing again
+      timeout = setTimeout(() => {
+        setIsDeleting(false);
+      }, 1200);
+    }
+
+    return () => clearTimeout(timeout);
+  }, [charIndex, isDeleting, tagline]);
+
+  // Split "Cura:" from the rest for styling
+  const curaPrefix = "Cura:";
+  let styledCura = null;
+  let restText = displayText;
+
+  if (displayText.length > 0) {
+    if (displayText.length <= curaPrefix.length) {
+      styledCura = displayText;
+      restText = "";
+    } else {
+      styledCura = curaPrefix;
+      restText = displayText.slice(curaPrefix.length);
+    }
+  }
+
+  return (
+    <div className="flex items-center gap-0 select-none min-w-0 overflow-hidden py-1">
+      <div className="flex items-center gap-1.5 whitespace-nowrap">
+        {styledCura && (
+          <span className="gradient-text font-[Manrope] font-black text-2xl tracking-tight">{styledCura}</span>
+        )}
+        <span className="text-on-surface-variant font-[Playfair_Display] font-medium italic text-lg">{restText}</span>
+        <span
+          className={`inline-block w-[2.5px] h-[22px] bg-primary ml-[1px] align-middle rounded-full transition-opacity duration-100 ${
+            showCursor ? "opacity-100" : "opacity-0"
+          }`}
+        />
+      </div>
+    </div>
+  );
+}
 
 export default function CuraNavbar() {
   const pathname = usePathname();
   const [showProfile, setShowProfile] = useState(false);
   const [showSettings, setShowSettings] = useState(false);
 
-  const links = [
-    { href: "/cura", label: "Search", icon: "search" },
-    { href: "/cura/trace", label: "Trace", icon: "query_stats" },
-    { href: "/cura/dashboard", label: "Dashboard", icon: "dashboard" },
-    { href: "/cura/timeline", label: "Timeline", icon: "timeline" },
-    { href: "/cura/treatment", label: "Treatment", icon: "medical_services" },
-  ];
+  // Close dropdowns on scroll
+  useEffect(() => {
+    const handleScroll = () => {
+      setShowProfile(false);
+      setShowSettings(false);
+    };
+
+    window.addEventListener("scroll", handleScroll);
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
 
   return (
     <>
-      <nav className="fixed top-0 left-0 right-0 z-50 h-16 flex items-center justify-between px-8 bg-white/70 backdrop-blur-xl border-b border-outline-variant/10 shadow-sm">
-        <div className="flex items-center gap-10">
-          <Link href="/" className="flex items-center gap-2.5 hover:opacity-80 transition-opacity">
-            <div className="w-9 h-9 rounded-xl bg-white shadow-md shadow-primary/10 flex items-center justify-center overflow-hidden p-0.5">
-              <Image src="/logo.jpg" alt="Cura Logo" width={32} height={32} className="object-contain" />
+      <nav className="fixed top-0 left-0 right-0 z-50 h-20 flex items-center justify-between px-8 bg-white/70 backdrop-blur-xl border-b border-outline-variant/10 shadow-sm">
+        <div className="flex items-center gap-6">
+          <Link href="/" className="flex items-center gap-2.5 hover:opacity-80 transition-opacity shrink-0">
+            <div className="w-12 h-12 rounded-xl bg-white shadow-md shadow-primary/10 flex items-center justify-center overflow-hidden">
+              <Image src="/logo.jpg" alt="Cura Logo" width={48} height={48} className="w-full h-full object-cover" />
             </div>
-            <span className="font-[Manrope] font-extrabold text-xl tracking-tight text-primary hidden sm:block">Cura</span>
           </Link>
-          <div className="hidden md:flex gap-1 text-sm font-medium">
-            {links.map((link) => {
-              const isActive = pathname === link.href;
-              return (
-                <Link
-                  key={link.href}
-                  href={link.href}
-                  className={`px-4 py-2 rounded-lg transition-all ${
-                    isActive
-                      ? "bg-primary/10 text-primary font-semibold"
-                      : "text-on-surface-variant hover:bg-surface-container-high hover:text-on-surface"
-                  }`}
-                >
-                  {link.label}
-                </Link>
-              );
-            })}
-          </div>
+          {/* Typewriter Tagline */}
+          <TypewriterTagline />
         </div>
         <div className="flex items-center gap-2">
           {/* Notifications */}
@@ -80,10 +144,9 @@ export default function CuraNavbar() {
           </Link>
         </div>
       </nav>
-
       {/* Settings Dropdown */}
       {showSettings && (
-        <div className="fixed top-[68px] right-28 z-[60] w-80 bg-white rounded-2xl p-6 shadow-2xl shadow-black/10 border border-outline-variant/10">
+        <div className="fixed top-[84px] right-28 z-[60] w-80 bg-white rounded-2xl p-6 shadow-2xl shadow-black/10 border border-outline-variant/10">
           <h3 className="font-[Manrope] font-bold text-lg mb-6 flex items-center gap-2">
             <span className="material-symbols-outlined text-primary">settings</span>
             Settings
@@ -127,7 +190,7 @@ export default function CuraNavbar() {
 
       {/* Profile Dropdown */}
       {showProfile && (
-        <div className="fixed top-[68px] right-8 z-[60] w-80 bg-white rounded-2xl p-6 shadow-2xl shadow-black/10 border border-outline-variant/10">
+        <div className="fixed top-[84px] right-8 z-[60] w-80 bg-white rounded-2xl p-6 shadow-2xl shadow-black/10 border border-outline-variant/10">
           <div className="flex items-center gap-4 mb-6 pb-6 border-b border-outline-variant/10">
             <div className="w-14 h-14 rounded-full bg-primary flex items-center justify-center text-on-primary text-xl font-bold">
               DR

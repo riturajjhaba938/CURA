@@ -8,8 +8,8 @@ export default function CuraTreatment() {
         <div className="absolute top-0 right-0 w-64 h-64 bg-primary/5 rounded-full -mr-20 -mt-20 blur-3xl"></div>
         <div className="max-w-3xl relative z-10">
           <div className="flex items-center gap-2 text-primary mb-4">
-            <span className="material-symbols-outlined">auto_awesome</span>
-            <span className="text-sm font-bold uppercase tracking-widest">Plain Language Summary</span>
+            <span className="w-6 h-6 flex items-center justify-center material-symbols-outlined text-lg leading-none">auto_awesome</span>
+            <span className="text-sm font-bold uppercase tracking-widest leading-none">Plain Language Summary</span>
           </div>
           <h3 className="font-[Manrope] text-4xl font-light leading-tight mb-6">
             Targeted <span className="text-primary font-bold">Neuro-Modulation</span> therapy uses low-frequency
@@ -20,8 +20,8 @@ export default function CuraTreatment() {
             of broad systemic side effects while maintaining a high clinical accuracy.
           </p>
           <div className="flex gap-4">
-            <button className="px-8 py-3 bg-primary text-on-primary rounded-xl font-medium flex items-center gap-2 hover:bg-primary-container transition-all">
-              Protocol Details <span className="material-symbols-outlined">arrow_forward</span>
+            <button className="px-8 py-3 bg-primary text-on-primary rounded-xl font-medium flex items-center justify-center gap-2 hover:bg-primary-container transition-all">
+              Protocol Details <span className="material-symbols-outlined text-xl leading-none">arrow_forward</span>
             </button>
             <button className="px-8 py-3 bg-surface-container-high text-primary rounded-xl font-medium hover:bg-surface-container-highest transition-all">
               Clinical Sources
@@ -36,8 +36,8 @@ export default function CuraTreatment() {
         <div className="col-span-12 lg:col-span-4 space-y-8">
           <div className="glass-card rounded-3xl p-8 transition-transform hover:-translate-y-1 antigravity-shadow">
             <div className="flex items-center justify-between mb-8">
-              <span className="p-3 bg-secondary-container text-primary rounded-2xl material-symbols-outlined">verified</span>
-              <span className="material-symbols-outlined text-outline-variant cursor-pointer">info</span>
+              <span className="w-12 h-12 bg-secondary-container text-primary rounded-2xl flex items-center justify-center material-symbols-outlined text-2xl leading-none">verified</span>
+              <span className="w-8 h-8 flex items-center justify-center material-symbols-outlined text-outline-variant cursor-pointer leading-none">info</span>
             </div>
             <div className="space-y-1">
               <p className="text-sm text-on-surface-variant font-semibold">Success Rate</p>
@@ -49,8 +49,8 @@ export default function CuraTreatment() {
           </div>
           <div className="glass-card rounded-3xl p-8 transition-transform hover:-translate-y-1 antigravity-shadow">
             <div className="flex items-center justify-between mb-8">
-              <span className="p-3 bg-tertiary-fixed text-tertiary rounded-2xl material-symbols-outlined">speed</span>
-              <span className="material-symbols-outlined text-outline-variant cursor-pointer">info</span>
+              <span className="w-12 h-12 bg-tertiary-fixed text-tertiary rounded-2xl flex items-center justify-center material-symbols-outlined text-2xl leading-none">speed</span>
+              <span className="w-8 h-8 flex items-center justify-center material-symbols-outlined text-outline-variant cursor-pointer leading-none">info</span>
             </div>
             <div className="space-y-1">
               <p className="text-sm text-on-surface-variant font-semibold">Median Recovery</p>
@@ -84,8 +84,8 @@ export default function CuraTreatment() {
                 { icon: "hearing", label: "Aural", opacity: "10" },
                 { icon: "waves", label: "Balance", opacity: "5" },
               ].map((item) => (
-                <div key={item.label} className={`bg-primary/${item.opacity} aspect-square rounded-2xl flex flex-col items-center justify-center gap-2 group relative cursor-help`}>
-                  <span className="material-symbols-outlined text-primary">{item.icon}</span>
+                <div key={item.label} className={`bg-primary/${item.opacity} aspect-square rounded-2xl flex flex-col items-center justify-center gap-1.5 group relative cursor-help`}>
+                  <span className="material-symbols-outlined text-primary text-[20px] block leading-none">{item.icon}</span>
                   <span className="text-[10px] font-bold text-primary">{item.label}</span>
                 </div>
               ))}
@@ -110,8 +110,8 @@ export default function CuraTreatment() {
                 { icon: "water_drop", title: "Electrolyte Intake", desc: "Critical for pulse transit" },
               ].map((adj) => (
                 <div key={adj.title} className="flex items-center gap-4 group">
-                  <div className="w-12 h-12 rounded-2xl bg-surface-container-high flex items-center justify-center text-primary group-hover:bg-primary group-hover:text-on-primary transition-all">
-                    <span className="material-symbols-outlined">{adj.icon}</span>
+                  <div className="w-12 h-12 rounded-2xl bg-surface-container-high flex items-center justify-center text-primary group-hover:bg-primary group-hover:text-on-primary transition-all shrink-0">
+                    <span className="material-symbols-outlined text-[22px] block leading-none">{adj.icon}</span>
                   </div>
                   <div>
                     <p className="text-sm font-bold">{adj.title}</p>
@@ -128,7 +128,9 @@ export default function CuraTreatment() {
       <section className="grid grid-cols-1 lg:grid-cols-2 gap-8">
         <div className="bg-primary/5 rounded-[2rem] p-10">
           <div className="flex items-center gap-3 mb-8">
-            <span className="w-10 h-10 rounded-full bg-primary flex items-center justify-center text-on-primary material-symbols-outlined">thumb_up</span>
+            <div className="w-10 h-10 rounded-full bg-primary flex items-center justify-center text-on-primary shrink-0">
+              <span className="material-symbols-outlined text-[22px] block leading-none">thumb_up</span>
+            </div>
             <h5 className="font-[Manrope] text-2xl font-bold">Best For</h5>
           </div>
           <ul className="space-y-6">
@@ -138,7 +140,7 @@ export default function CuraTreatment() {
               { title: "Long-term Neurological Maintenance", desc: "Suitable for chronic management due to low toxicity levels." },
             ].map((item) => (
               <li key={item.title} className="flex items-start gap-4">
-                <span className="material-symbols-outlined text-primary mt-1">check_circle</span>
+                <span className="material-symbols-outlined text-primary text-[20px] leading-none shrink-0" style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>check_circle</span>
                 <div>
                   <p className="font-bold text-on-surface">{item.title}</p>
                   <p className="text-sm text-on-surface-variant">{item.desc}</p>
@@ -149,7 +151,9 @@ export default function CuraTreatment() {
         </div>
         <div className="bg-error/5 rounded-[2rem] p-10">
           <div className="flex items-center gap-3 mb-8">
-            <span className="w-10 h-10 rounded-full bg-error flex items-center justify-center text-on-error material-symbols-outlined">warning</span>
+            <div className="w-10 h-10 rounded-full bg-error flex items-center justify-center text-on-error shrink-0">
+              <span className="material-symbols-outlined text-[22px] block leading-none">warning</span>
+            </div>
             <h5 className="font-[Manrope] text-2xl font-bold">Not Recommended</h5>
           </div>
           <ul className="space-y-6">
@@ -159,7 +163,7 @@ export default function CuraTreatment() {
               { title: "High Sensitivity to EM Fields", desc: "Minor percentage of users report transient dizziness during sessions." },
             ].map((item) => (
               <li key={item.title} className="flex items-start gap-4">
-                <span className="material-symbols-outlined text-error mt-1">cancel</span>
+                <span className="material-symbols-outlined text-error text-[20px] leading-none shrink-0" style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>cancel</span>
                 <div>
                   <p className="font-bold text-on-surface">{item.title}</p>
                   <p className="text-sm text-on-surface-variant">{item.desc}</p>
@@ -174,7 +178,7 @@ export default function CuraTreatment() {
       <section className="glass-card rounded-[2rem] p-10 border-l-4 border-error antigravity-shadow">
         <div className="flex items-start gap-6">
           <div className="w-14 h-14 rounded-2xl bg-error/10 flex items-center justify-center flex-shrink-0">
-            <span className="material-symbols-outlined text-3xl text-error">emergency</span>
+            <span className="material-symbols-outlined text-3xl text-error block leading-none">emergency</span>
           </div>
           <div className="flex-1">
             <div className="flex items-center gap-3 mb-3">
@@ -209,7 +213,9 @@ export default function CuraTreatment() {
       {/* Key Facts About the Disease */}
       <section className="glass-card rounded-[2rem] p-10 antigravity-shadow">
         <div className="flex items-center gap-3 mb-8">
-          <span className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center material-symbols-outlined text-primary">info</span>
+          <div className="w-10 h-10 flex-shrink-0 rounded-full bg-primary/10 flex items-center justify-center text-primary">
+            <span className="material-symbols-outlined text-[22px] block leading-none">info</span>
+          </div>
           <h4 className="font-[Manrope] text-2xl font-bold">Important Information</h4>
         </div>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -220,7 +226,7 @@ export default function CuraTreatment() {
             { icon: "monitoring", title: "Monitoring Required", desc: "Weekly EEG monitoring, bi-weekly voice trace analysis, and monthly cognitive assessments recommended. Report any sudden changes in speech or motor function immediately." },
           ].map((item) => (
             <div key={item.title} className="flex items-start gap-4 p-5 bg-surface-container-low rounded-2xl hover:bg-surface-container-high transition-colors">
-              <span className="material-symbols-outlined text-primary mt-0.5">{item.icon}</span>
+              <span className="w-8 h-8 flex items-center justify-center material-symbols-outlined text-primary text-xl block leading-none shrink-0">{item.icon}</span>
               <div>
                 <p className="font-bold text-on-surface mb-1">{item.title}</p>
                 <p className="text-sm text-on-surface-variant leading-relaxed">{item.desc}</p>
@@ -240,12 +246,25 @@ export default function CuraTreatment() {
               <p className="text-sm text-on-surface-variant">Specialized centers for Synaptic Fatigue Syndrome treatment</p>
             </div>
           </div>
-          <button className="px-5 py-2 bg-surface-container-high text-on-surface rounded-xl text-sm font-medium hover:bg-surface-container-highest transition-all flex items-center gap-2">
-            <span className="material-symbols-outlined text-base">map</span>
+          <button className="px-5 py-2.5 bg-surface-container-high text-on-surface rounded-xl text-sm font-medium hover:bg-surface-container-highest transition-all flex items-center justify-center gap-2">
+            <span className="material-symbols-outlined text-lg leading-none">map</span>
             View on Map
           </button>
         </div>
-
+        <div className="flex flex-col md:flex-row gap-4 items-start md:items-center justify-between bg-surface-container-lowest p-5 rounded-2xl border border-outline-variant/10">
+          <div className="flex items-center gap-2 text-on-surface-variant font-medium text-sm">
+            <span className="w-8 h-8 flex items-center justify-center material-symbols-outlined text-[20px] block leading-none">filter_alt</span>
+            Estimated Cost Range:
+          </div>
+          <div className="flex flex-wrap items-center gap-6">
+            {["Any Price", "₹5,000 - ₹50,000", "₹50,000 - ₹1,00,000", "₹1,00,000 - ₹5,00,000"].map((range, i) => (
+              <label key={range} className="flex items-center gap-2 cursor-pointer group">
+                <input type="radio" name="costRange" defaultChecked={i === 0} className="w-4.5 h-4.5 text-primary bg-surface-container border-outline-variant focus:ring-primary focus:ring-2 accent-primary transition-all cursor-pointer" />
+                <span className="text-sm font-semibold text-on-surface group-hover:text-primary transition-colors">{range}</span>
+              </label>
+            ))}
+          </div>
+        </div>
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
           {[
             {
@@ -343,20 +362,20 @@ export default function CuraTreatment() {
               {/* Header */}
               <div>
                 <div className="flex items-start justify-between mb-4">
-                  <div className={`w-12 h-12 rounded-2xl bg-${clinic.color === 'primary' ? 'primary' : clinic.color === 'secondary' ? 'secondary-container' : 'tertiary-fixed'} flex items-center justify-center`}>
-                    <span className={`material-symbols-outlined text-${clinic.color === 'primary' ? 'on-primary' : clinic.color === 'secondary' ? 'secondary' : 'tertiary'}`} style={{ fontVariationSettings: "'FILL' 1" }}>local_hospital</span>
+                  <div className={`w-12 h-12 rounded-2xl bg-${clinic.color === 'primary' ? 'primary' : clinic.color === 'secondary' ? 'secondary-container' : 'tertiary-fixed'} flex items-center justify-center flex-shrink-0 text-white`}>
+                    <span className={`material-symbols-outlined text-${clinic.color === 'primary' ? 'on-primary' : clinic.color === 'secondary' ? 'secondary' : 'tertiary'} text-2xl block leading-none`} style={{ fontVariationSettings: "'FILL' 1" }}>local_hospital</span>
                   </div>
-                  <div className="flex items-center gap-1.5 bg-surface-container-high px-3 py-1.5 rounded-full">
-                    <span className="material-symbols-outlined text-amber-500 text-base" style={{ fontVariationSettings: "'FILL' 1" }}>star</span>
-                    <span className="text-sm font-bold text-on-surface">{clinic.rating}</span>
-                    <span className="text-xs text-on-surface-variant">({clinic.reviews.toLocaleString()})</span>
+                  <div className="flex items-center gap-1.5 bg-surface-container-high px-3 py-1.5 rounded-full shrink-0">
+                    <span className="w-4 h-4 flex items-center justify-center material-symbols-outlined text-amber-500 text-sm leading-none" style={{ fontVariationSettings: "'FILL' 1" }}>star</span>
+                    <span className="text-sm font-bold text-on-surface leading-none">{clinic.rating}</span>
+                    <span className="text-xs text-on-surface-variant leading-none">({clinic.reviews.toLocaleString()})</span>
                   </div>
                 </div>
                 <h5 className="font-[Manrope] text-xl font-bold text-on-surface mb-1">{clinic.name}</h5>
                 <p className="text-sm text-on-surface-variant mb-1">{clinic.type} • {clinic.specialty}</p>
                 <div className="flex items-center gap-4 mb-4">
                   <div className="flex items-center gap-1.5 text-primary text-sm font-medium">
-                    <span className="material-symbols-outlined text-base">location_on</span>
+                    <span className="w-5 h-5 flex items-center justify-center material-symbols-outlined text-base leading-none">location_on</span>
                     {clinic.distance} away
                   </div>
                   <span className="text-on-surface-variant text-xs">•</span>
@@ -404,15 +423,15 @@ export default function CuraTreatment() {
                 </p>
                 <div className="flex items-center justify-between gap-2">
                   <button title="Call Clinic" className="flex-1 py-2.5 bg-surface-container-high hover:bg-surface-container-highest text-on-surface rounded-xl text-sm font-semibold transition-colors flex items-center justify-center gap-2 group/btn">
-                    <span className="material-symbols-outlined text-base text-primary group-hover/btn:scale-110 transition-transform">call</span>
+                    <span className="w-5 h-5 flex items-center justify-center material-symbols-outlined text-base text-primary group-hover/btn:scale-110 transition-transform leading-none">call</span>
                     Contact
                   </button>
                   <button title="Get Directions" className="flex-1 py-2.5 bg-surface-container-high hover:bg-surface-container-highest text-on-surface rounded-xl text-sm font-semibold transition-colors flex items-center justify-center gap-2 group/btn">
-                    <span className="material-symbols-outlined text-base text-secondary group-hover/btn:scale-110 transition-transform" style={{ fontVariationSettings: "'FILL' 1" }}>location_on</span>
+                    <span className="w-5 h-5 flex items-center justify-center material-symbols-outlined text-base text-secondary group-hover/btn:scale-110 transition-transform leading-none" style={{ fontVariationSettings: "'FILL' 1" }}>location_on</span>
                     Location
                   </button>
                   <button title="Email Clinic" className="w-10 h-10 bg-surface-container-high hover:bg-surface-container-highest text-on-surface rounded-xl flex items-center justify-center transition-colors flex-shrink-0 group/btn">
-                    <span className="material-symbols-outlined text-base text-tertiary group-hover/btn:scale-110 transition-transform">mail</span>
+                    <span className="w-5 h-5 flex items-center justify-center material-symbols-outlined text-base text-tertiary group-hover/btn:scale-110 transition-transform leading-none">mail</span>
                   </button>
                 </div>
               </div>
@@ -423,7 +442,7 @@ export default function CuraTreatment() {
         {/* Patient Review Highlights */}
         <div className="glass-card rounded-[2rem] p-8 antigravity-shadow">
           <h5 className="font-[Manrope] text-lg font-bold mb-6 flex items-center gap-2">
-            <span className="material-symbols-outlined text-primary">rate_review</span>
+            <span className="w-8 h-8 flex items-center justify-center material-symbols-outlined text-primary text-xl block leading-none">rate_review</span>
             Recent Patient Reviews
           </h5>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">

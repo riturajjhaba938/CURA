@@ -1,7 +1,11 @@
+"use client";
+import { useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
 
 export default function HomePage() {
+  const [role, setRole] = useState("patient"); // "patient" or "clinician"
+
   return (
     <div className="min-h-screen bg-surface flex flex-col items-center justify-center relative overflow-hidden">
       {/* Background blurs */}
@@ -31,24 +35,37 @@ export default function HomePage() {
           </h1>
         </div>
 
-        <p className="text-on-surface-variant text-lg md:text-xl max-w-2xl mx-auto font-light leading-relaxed animate-[fadeInUp_1s_ease]">
-          AI-powered clinical intelligence aggregating real-world evidence and patient data for precision diagnostics.
+        {/* Role Toggle Swapper */}
+        <div className="bg-surface-container-high p-1 rounded-2xl inline-flex items-center animate-[fadeInUp_1s_ease]">
+          <button 
+            onClick={() => setRole("patient")}
+            className={`px-8 py-2.5 rounded-xl font-bold text-sm transition-all ${role === "patient" ? "bg-white text-primary shadow-sm" : "text-on-surface-variant hover:text-on-surface"}`}
+          >
+            My Health
+          </button>
+          <button 
+            onClick={() => setRole("clinician")}
+            className={`px-8 py-2.5 rounded-xl font-bold text-sm transition-all ${role === "clinician" ? "bg-white text-primary shadow-sm" : "text-on-surface-variant hover:text-on-surface"}`}
+          >
+            Clinicians
+          </button>
+        </div>
+
+        <p className="text-on-surface-variant text-lg md:text-xl max-w-2xl mx-auto font-light leading-relaxed animate-[fadeInUp_1.1s_ease] h-20">
+          {role === "patient" 
+            ? "Your personal healthcare companion. Access your medical history, recovery path, and daily health metrics in one secure place."
+            : "AI-powered clinical intelligence aggregating real-world evidence and patient data for precision diagnostics."}
         </p>
 
         <div className="flex flex-col sm:flex-row gap-4 justify-center animate-[fadeInUp_1.2s_ease]">
           <Link
-            href="/cura"
-            className="px-8 py-3 bg-primary text-on-primary rounded-xl font-bold text-base hover:bg-primary-container transition-all antigravity-shadow flex items-center justify-center gap-2 hover:scale-105 active:scale-95 hover:shadow-xl hover:shadow-primary/20"
+            href={role === "patient" ? "/patient" : "/login"}
+            className="px-10 py-4 bg-primary text-on-primary rounded-2xl font-bold text-lg hover:bg-primary-container transition-all antigravity-shadow flex items-center justify-center gap-3 hover:scale-105 active:scale-95 hover:shadow-xl hover:shadow-primary/20"
           >
-            <span className="material-symbols-outlined text-xl">query_stats</span>
-            For Clinicians
-          </Link>
-          <Link
-            href="/patient"
-            className="px-8 py-3 bg-surface-container-lowest text-primary rounded-xl font-bold text-base border border-outline-variant/20 hover:bg-surface-container-low transition-all antigravity-shadow flex items-center justify-center gap-2 hover:scale-105 active:scale-95"
-          >
-            <span className="material-symbols-outlined text-xl">person</span>
-            My Health
+            <span className="material-symbols-outlined text-2xl">
+              {role === "patient" ? "person" : "query_stats"}
+            </span>
+            Enter {role === "patient" ? "Patient Portal" : "Clinical Portal"}
           </Link>
         </div>
 
