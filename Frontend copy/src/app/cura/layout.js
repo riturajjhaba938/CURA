@@ -6,7 +6,7 @@ export default function CuraLayout({ children }) {
     <>
       <CuraNavbar />
       <CuraSidebar />
-      <div className="pt-16 lg:pl-[72px] min-h-screen">
+      <div className="pt-20 lg:pl-[72px] min-h-screen">
         {children}
       </div>
     </>

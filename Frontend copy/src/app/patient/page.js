@@ -49,7 +49,7 @@ export default function PatientHome() {
         </section>
 
         {/* Bento Grid */}
-        <section className="max-w-7xl mx-auto px-6 -mt-20 mb-32">
+        <section className="max-w-7xl mx-auto px-6 -mt-20 mb-32 relative z-10">
           <div className="grid grid-cols-1 md:grid-cols-12 gap-8">
             {/* Primary Insight */}
             <div className="md:col-span-8 glass-card rounded-[2rem] p-10 antigravity-shadow relative overflow-hidden group">
@@ -83,8 +83,8 @@ export default function PatientHome() {
             </div>
 
             {/* Secondary Stats */}
-            <div className="md:col-span-4 space-y-8">
-              <div className="glass-card rounded-[2rem] p-8 antigravity-shadow flex items-center gap-6">
+            <div className="md:col-span-4 flex flex-col gap-8 h-full">
+              <div className="glass-card rounded-[2rem] p-8 antigravity-shadow flex items-center gap-6 shrink-0">
                 <div className="w-16 h-16 rounded-full bg-secondary-container flex items-center justify-center text-on-secondary-container">
                   <span className="material-symbols-outlined text-3xl">water_drop</span>
                 </div>
@@ -94,7 +94,7 @@ export default function PatientHome() {
                 </div>
               </div>
 
-              <div className="glass-card rounded-[2rem] p-8 antigravity-shadow h-full">
+              <div className="glass-card rounded-[2rem] p-8 antigravity-shadow flex-1 flex flex-col justify-center">
                 <p className="text-sm font-medium text-on-surface-variant mb-6 flex items-center gap-2">
                   <span className="material-symbols-outlined text-sm">schedule</span> Recent Lab Results
                 </p>

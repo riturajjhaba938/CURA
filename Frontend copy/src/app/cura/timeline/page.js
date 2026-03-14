@@ -2,7 +2,7 @@ import FAB from "@/components/FAB";
 
 export default function CuraTimeline() {
   return (
-    <div className="flex min-h-[calc(100vh-64px)]">
+    <div className="flex h-[calc(100vh-80px)] overflow-hidden">
       {/* Main Content */}
       <main className="flex-1 overflow-y-auto p-10 flex flex-col gap-12">
         {/* Hero Header */}

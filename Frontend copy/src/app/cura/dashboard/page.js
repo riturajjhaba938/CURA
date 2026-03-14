@@ -2,7 +2,7 @@ import FAB from "@/components/FAB";
 
 export default function CuraDashboard() {
   return (
-    <div className="flex h-[calc(100vh-64px)] overflow-hidden">
+    <div className="flex h-[calc(100vh-80px)] overflow-hidden">
       {/* Left: Patient Voice Feed (40%) */}
       <section className="w-[40%] bg-surface-bright flex flex-col overflow-hidden">
         <div className="px-8 pt-10 pb-6">

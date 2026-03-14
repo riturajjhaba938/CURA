@@ -1,4 +1,4 @@
-import { Manrope, Inter } from "next/font/google";
+import { Manrope, Inter, Playfair_Display } from "next/font/google";
 import "./globals.css";
 import LoadingScreen from "@/components/LoadingScreen";
 
@@ -12,6 +12,12 @@ const inter = Inter({
   variable: "--font-inter",
   subsets: ["latin"],
   weight: ["300", "400", "500", "600"],
+});
+
+const playfair = Playfair_Display({
+  variable: "--font-playfair",
+  subsets: ["latin"],
+  weight: ["400", "500", "600", "700"],
 });
 
 export const metadata = {
@@ -28,7 +34,7 @@ export default function RootLayout({ children }) {
           rel="stylesheet"
         />
       </head>
-      <body suppressHydrationWarning className={`${manrope.variable} ${inter.variable} antialiased bg-surface text-on-surface min-h-screen`}>
+      <body suppressHydrationWarning className={`${manrope.variable} ${inter.variable} ${playfair.variable} antialiased bg-surface text-on-surface min-h-screen`}>
         <LoadingScreen>{children}</LoadingScreen>
       </body>
     </html>

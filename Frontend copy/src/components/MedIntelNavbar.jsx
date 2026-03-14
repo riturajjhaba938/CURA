@@ -2,28 +2,38 @@
 import Link from "next/link";
 import Image from "next/image";
 import { usePathname } from "next/navigation";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
 export default function MedIntelNavbar() {
   const pathname = usePathname();
   const [showProfile, setShowProfile] = useState(false);
   const [showSettings, setShowSettings] = useState(false);
 
+  // Close dropdowns on scroll
+  useEffect(() => {
+    const handleScroll = () => {
+      setShowProfile(false);
+      setShowSettings(false);
+    };
+
+    window.addEventListener("scroll", handleScroll);
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
+
   const links = [
     { href: "/patient", label: "Health Summary" },
     { href: "/patient/dashboard", label: "Recovery Timeline" },
-    { href: "/patient/insights", label: "Medical Metrics" },
     { href: "/patient/plan", label: "My Plan" },
   ];
 
   return (
     <>
       <nav className="sticky top-0 z-50 bg-white/80 backdrop-blur-xl border-b border-outline-variant/10 shadow-sm">
-        <div className="max-w-7xl mx-auto px-6 h-16 flex items-center justify-between">
+        <div className="max-w-7xl mx-auto px-6 h-20 flex items-center justify-between">
           <div className="flex items-center gap-10">
             <Link href="/" className="flex items-center gap-2.5 hover:opacity-80 transition-opacity">
-              <div className="w-9 h-9 rounded-xl bg-white shadow-md shadow-primary/10 flex items-center justify-center overflow-hidden p-0.5">
-                <Image src="/logo.jpg" alt="Cura Logo" width={32} height={32} className="object-contain" />
+              <div className="w-12 h-12 rounded-xl bg-white shadow-md shadow-primary/10 flex items-center justify-center overflow-hidden">
+                <Image src="/logo.jpg" alt="Cura Logo" width={48} height={48} className="w-full h-full object-cover" />
               </div>
               <span className="font-[Manrope] text-xl font-bold tracking-tight text-primary">Cura</span>
             </Link>
@@ -47,33 +57,32 @@ export default function MedIntelNavbar() {
             </div>
           </div>
           <div className="flex items-center gap-2">
-            <button className="p-2 text-on-surface-variant hover:bg-surface-container-high hover:text-primary rounded-full transition-all">
-              <span className="material-symbols-outlined text-[22px]">shield</span>
+            <button className="w-10 h-10 flex items-center justify-center text-on-surface-variant hover:bg-surface-container-high hover:text-primary rounded-full transition-all">
+              <span className="material-symbols-outlined text-[22px] block leading-none">shield</span>
             </button>
             <button
               onClick={() => { setShowSettings(!showSettings); setShowProfile(false); }}
-              className={`p-2 rounded-full transition-all ${showSettings ? "bg-primary/10 text-primary" : "text-on-surface-variant hover:bg-surface-container-high hover:text-primary"}`}
+              className={`w-10 h-10 flex items-center justify-center rounded-full transition-all ${showSettings ? "bg-primary/10 text-primary" : "text-on-surface-variant hover:bg-surface-container-high hover:text-primary"}`}
             >
-              <span className="material-symbols-outlined text-[22px]">settings</span>
+              <span className="material-symbols-outlined text-[22px] block leading-none">settings</span>
             </button>
             <button
               onClick={() => { setShowProfile(!showProfile); setShowSettings(false); }}
-              className={`p-2 rounded-full transition-all ${showProfile ? "bg-primary/10 text-primary" : "text-on-surface-variant hover:bg-surface-container-high hover:text-primary"}`}
+              className={`w-10 h-10 flex items-center justify-center rounded-full transition-all ${showProfile ? "bg-primary/10 text-primary" : "text-on-surface-variant hover:bg-surface-container-high hover:text-primary"}`}
             >
-              <span className="material-symbols-outlined text-[22px]">account_circle</span>
+              <span className="material-symbols-outlined text-[22px] block leading-none">account_circle</span>
             </button>
             <div className="h-8 w-[1px] bg-outline-variant opacity-20 mx-2"></div>
-            <button className="bg-primary hover:bg-primary-container text-on-primary px-5 py-2 rounded-xl font-semibold text-sm transition-all hover:scale-105 active:scale-95 flex items-center gap-2">
-              <span className="material-symbols-outlined text-base">download</span>
+            <button className="bg-primary hover:bg-primary-container text-on-primary px-5 py-2 rounded-xl font-semibold text-sm transition-all hover:scale-105 active:scale-95 flex items-center justify-center gap-2">
+              <span className="material-symbols-outlined text-[18px] block leading-none">download</span>
               Export PDF
             </button>
           </div>
         </div>
       </nav>
-
       {/* Settings Dropdown */}
       {showSettings && (
-        <div className="fixed top-[68px] right-44 z-[60] w-80 bg-white rounded-2xl p-6 shadow-2xl shadow-black/10 border border-outline-variant/10">
+        <div className="fixed top-[84px] right-44 z-[60] w-80 bg-white rounded-2xl p-6 shadow-2xl shadow-black/10 border border-outline-variant/10">
           <h3 className="font-[Manrope] font-bold text-lg mb-6 flex items-center gap-2">
             <span className="material-symbols-outlined text-primary">settings</span>
             Settings
@@ -117,7 +126,7 @@ export default function MedIntelNavbar() {
 
       {/* Profile Dropdown */}
       {showProfile && (
-        <div className="fixed top-[68px] right-8 z-[60] w-80 bg-white rounded-2xl p-6 shadow-2xl shadow-black/10 border border-outline-variant/10">
+        <div className="fixed top-[84px] right-8 z-[60] w-80 bg-white rounded-2xl p-6 shadow-2xl shadow-black/10 border border-outline-variant/10">
           <div className="flex items-center gap-4 mb-6 pb-6 border-b border-outline-variant/10">
             <div className="w-14 h-14 rounded-full bg-primary-container flex items-center justify-center text-primary text-xl font-bold">
               SK

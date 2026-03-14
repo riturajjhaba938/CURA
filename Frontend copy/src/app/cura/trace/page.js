@@ -2,7 +2,7 @@ import FAB from "@/components/FAB";
 
 export default function CuraVoiceTrace() {
   return (
-    <div className="flex h-[calc(100vh-64px)] overflow-hidden">
+    <div className="flex h-[calc(100vh-80px)] overflow-hidden">
       {/* Left Pane: Raw Text */}
       <section className="flex-1 overflow-y-auto bg-surface-bright p-12 border-r border-outline-variant/10">
         <div className="max-w-xl mx-auto">
