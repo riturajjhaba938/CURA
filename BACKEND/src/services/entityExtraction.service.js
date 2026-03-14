@@ -3,33 +3,47 @@ const { parseExtractedEntities } = require('../utils/medicalParser');
 const { anonymizeText } = require('./anonymization.service');
 const { getCache, setCache } = require('../utils/cache');
 const { withRetry } = require('../utils/aiPatterns');
+const Comment = require('../models/Comment');
 
 /**
  * Extracts medical entities from text using the Bytez biomedical-ner-all model.
  * Text is first anonymized (PHI stripped) before NER extraction.
+ *
+ * @param {string} commentIdOrText - Either a MongoDB comment_id or raw text
+ * @param {boolean} isRawText - If true, treat the first arg as raw text directly
  */
-const extractEntities = async (commentId) => {
+const extractEntities = async (commentIdOrText, isRawText = false) => {
   try {
-    const cacheKey = `extract_${commentId}`;
+    const cacheKey = `extract_${commentIdOrText.substring(0, 80)}`;
     const cached = getCache(cacheKey);
     if (cached) {
-      console.log(`[Cache hit] Extract entities for ${commentId}`);
+      console.log(`[Cache hit] Extract entities for ${commentIdOrText.substring(0, 40)}`);
       return cached;
     }
 
-    // In a real scenario, fetch the comment from DB:
-    // const comment = await CommentModel.findById(commentId);
-    // const rawText = comment.body;
-    
-    // For now, mock the text with PII included:
-    const rawText = `My name is John Smith from NYC. I took 20mg of Accutane and by Week 2 I had severe dry lips.`;
+    // Get the raw text — either directly or from MongoDB
+    let rawText;
+    if (isRawText) {
+      rawText = commentIdOrText;
+    } else {
+      const comment = await Comment.findOne({ comment_id: commentIdOrText });
+      if (!comment) {
+        console.warn(`[Extract] Comment not found: ${commentIdOrText}`);
+        return parseExtractedEntities({ drug: null, side_effect: null, dosage: null, timeline_marker: null });
+      }
+      rawText = comment.text;
+    }
+
+    if (!rawText || rawText.length < 10) {
+      return parseExtractedEntities({ drug: null, side_effect: null, dosage: null, timeline_marker: null });
+    }
 
     // Step 1: Anonymize the text (strip PHI for HIPAA compliance)
     const anonymized = await anonymizeText(rawText);
     const text = anonymized.anonymized_text;
     console.log(`[Extract] Anonymized text: "${text.substring(0, 80)}..."`);
 
-    console.log(`[Bytez NER] Running biomedical-ner-all model for comment ${commentId}`);
+    console.log(`[Bytez NER] Running biomedical-ner-all model...`);
 
     // Use the Bytez SDK to run the biomedical NER model with retry logic
     const nerOutput = await withRetry(async () => {

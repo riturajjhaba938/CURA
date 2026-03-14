@@ -49,51 +49,82 @@ const SYMPTOM_KEYWORDS = [
  * @returns {Object} - { drug, timeline: [{ period, symptoms: [{ symptom, count }] }] }
  */
 const getTimeline = async (drugName) => {
-  // Find all posts for this drug
-  const posts = await Post.find({ query_drug: drugName.toLowerCase() });
-  const postIds = posts.map((p) => p.post_id);
-
-  if (postIds.length === 0) {
-    logger.warn(`No posts found for drug "${drugName}"`);
-    return { drug: drugName, timeline: [] };
-  }
-
-  // Fetch all comments linked to those posts
-  const comments = await Comment.find({ post_id: { $in: postIds } });
-
-  // Build timeline buckets
+  const Insight = require("../models/Insight");
+  
+  // 1. Fetch AI-extracted Insights for this drug
+  const insights = await Insight.find({ drug: drugName.toLowerCase() });
+  
   const timelineMap = {};
 
-  for (const comment of comments) {
-    const text = comment.text.toLowerCase();
+  if (insights.length > 0) {
+    logger.info(`[Timeline] Using AI Insights for "${drugName}" (${insights.length} records)`);
+    
+    for (const insight of insights) {
+      const period = insight.timeline_marker || "General";
+      const symptom = insight.side_effect;
 
-    for (const { regex, label } of TIMELINE_PATTERNS) {
-      if (regex.test(comment.text)) {
-        if (!timelineMap[label]) {
-          timelineMap[label] = {};
-        }
+      if (!symptom) continue;
 
-        for (const symptom of SYMPTOM_KEYWORDS) {
-          if (text.includes(symptom)) {
-            timelineMap[label][symptom] = (timelineMap[label][symptom] || 0) + 1;
+      if (!timelineMap[period]) {
+        timelineMap[period] = {};
+      }
+
+      timelineMap[period][symptom] = (timelineMap[period][symptom] || 0) + 1;
+    }
+  } else {
+    // 2. Fallback: Keyword-based aggregation on raw comments
+    logger.info(`[Timeline] No AI Insights found for "${drugName}". Falling back to keyword matching...`);
+    
+    // Find all posts for this drug
+    const posts = await Post.find({ query_drug: drugName.toLowerCase() });
+    const postIds = posts.map((p) => p.post_id);
+
+    if (postIds.length === 0) {
+      logger.warn(`No posts found for drug "${drugName}"`);
+      return { drug: drugName, timeline: [] };
+    }
+
+    // Fetch all comments linked to those posts
+    const comments = await Comment.find({ post_id: { $in: postIds } });
+
+    for (const comment of comments) {
+      const text = comment.text.toLowerCase();
+
+      for (const { regex, label } of TIMELINE_PATTERNS) {
+        if (regex.test(comment.text)) {
+          if (!timelineMap[label]) {
+            timelineMap[label] = {};
+          }
+
+          for (const symptom of SYMPTOM_KEYWORDS) {
+            if (text.includes(symptom)) {
+              timelineMap[label][symptom] = (timelineMap[label][symptom] || 0) + 1;
+            }
           }
         }
       }
     }
   }
 
-  // Convert map to sorted array
-  const periodOrder = TIMELINE_PATTERNS.map((p) => p.label);
-  const timeline = Object.entries(timelineMap)
-    .sort(([a], [b]) => periodOrder.indexOf(a) - periodOrder.indexOf(b))
-    .map(([period, symptoms]) => ({
-      period,
-      symptoms: Object.entries(symptoms)
-        .map(([symptom, count]) => ({ symptom, count }))
-        .sort((a, b) => b.count - a.count),
-    }));
+  // Convert map to flattened array to match PLAN.md format
+  const periodOrder = ["General", ...TIMELINE_PATTERNS.map((p) => p.label)];
+  const timeline = [];
 
-  logger.info(`Timeline built for "${drugName}" — ${timeline.length} periods`);
+  Object.entries(timelineMap)
+    .sort(([a], [b]) => periodOrder.indexOf(a) - periodOrder.indexOf(b))
+    .forEach(([period, symptoms]) => {
+      Object.entries(symptoms)
+        .sort((a, b) => b[1] - a[1]) // Sort symptoms by count descending
+        .forEach(([symptom, count]) => {
+          timeline.push({
+            week: period, // Using "week" to match PLAN.md key
+            symptom,
+            count,
+          });
+        });
+    });
+
+  logger.info(`Timeline built for "${drugName}" — ${timeline.length} flattened entries`);
   return { drug: drugName, timeline };
 };
 
