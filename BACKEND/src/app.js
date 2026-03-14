@@ -1,5 +1,7 @@
 require('dotenv').config();
 const mongoose = require('mongoose');
+const dns = require('dns');
+dns.setServers(['8.8.8.8']); // Fix for Atlas DNS resolution in some environments
 const express = require("express");
 const cors = require("cors");
 const rateLimit = require("express-rate-limit");
