@@ -1,17 +1,18 @@
 const { openfdaClient } = require('../config/openfda');
 const { calculateCredibility } = require('./credibility.service');
+const { analyzeClaim, verdictToScore } = require('./bsMeter.service');
 const { getCache, setCache } = require('../utils/cache');
 const { withRetry } = require('../utils/aiPatterns');
 
 /**
- * Verifies a claim against OpenFDA.
- * Extracts drug and side effect to look up FAERS records.
+ * Verifies a claim against OpenFDA and runs the BS Meter for NLI analysis.
+ * Returns FDA match status, BS Meter verdict, and overall credibility score.
  */
-const verifyClaim = async (drug, sideEffect) => {
+const verifyClaim = async (drug, sideEffect, claimText) => {
   let fdaMatch = false;
 
   try {
-    // 1. Validate if drug is required
+    // 1. Validate inputs
     if (!drug || !sideEffect) {
        throw new Error('Both drug and side effect are required for verification.');
     }
@@ -23,55 +24,72 @@ const verifyClaim = async (drug, sideEffect) => {
       return cached;
     }
 
-    // 2. Query OpenFDA
+    // 2. Query OpenFDA for direct adverse event match
     const queryStr = `patient.drug.medicinalproduct:"${drug}" AND patient.reaction.reactionmeddrapt:"${sideEffect}"`;
     
-    // Check if there are any exact matches in FDA adverse events
-    // We wrap this external call in withRetry as well to ensure robust reliability
-    const response = await withRetry(async () => {
-      // Simulate FDA rate limit occasionally
-      if (Math.random() < 0.1) throw new Error("FDA API Rate Limit Simulated");
+    try {
+      const response = await withRetry(async () => {
+        return await openfdaClient.get('/event.json', {
+          params: {
+            search: queryStr,
+            limit: 1
+          }
+        });
+      }, 3, 1000);
 
-      return await openfdaClient.get('/event.json', {
-        params: {
-          search: queryStr,
-          limit: 1
-        }
-      });
-    }, 3, 1000);
-
-    if (response.data && response.data.results && response.data.results.length > 0) {
-      fdaMatch = true;
+      if (response.data && response.data.results && response.data.results.length > 0) {
+        fdaMatch = true;
+      }
+    } catch (err) {
+      if (err.response && err.response.status === 404) {
+        fdaMatch = false;
+      } else {
+        console.error(`FDA API Error for ${drug} + ${sideEffect}:`, err.message);
+        fdaMatch = false;
+      }
     }
-  } catch (err) {
-    if (err.response && err.response.status === 404) {
-      // 404 from FDA means no match found, this is fine, it just means not verified
-      fdaMatch = false;
-    } else {
-      console.error(`FDA API Error after retries for drug ${drug} and effect ${sideEffect}:`, err.message);
-      // Fallback: gracefully fail the FDA matching so credibility score just doesn't get the FDA bonus.
-      fdaMatch = false;
+
+    // 3. Run the BS Meter (NLI fact-checking)
+    const bsMeterClaimText = claimText || `I took ${drug} and experienced ${sideEffect}`;
+    let bsMeterResult;
+    try {
+      bsMeterResult = await analyzeClaim(drug, sideEffect, bsMeterClaimText);
+    } catch (err) {
+      console.error(`[BS Meter] Analysis failed:`, err.message);
+      bsMeterResult = {
+        verdict: 'neutral',
+        confidence: 0.5,
+        fda_side_effects_found: [],
+        fda_reports_exist: false,
+        details: { error: err.message }
+      };
     }
-  }
 
-  // Use mock values for Reddit frequency and upvote weight right now 
-  // since these likely require DB aggregation which isn't described yet.
-  const redditFrequency = 0.8;
-  const upvoteWeight = 0.5;
+    // 4. Calculate credibility score with NLI integration
+    const nliScore = verdictToScore(bsMeterResult.verdict);
+    const redditFrequency = 0.8; // Mock - would come from DB aggregation
+    const upvoteWeight = 0.5;    // Mock - would come from DB aggregation
 
-  const score = calculateCredibility(fdaMatch, redditFrequency, upvoteWeight);
+    const score = calculateCredibility(fdaMatch, nliScore, redditFrequency, upvoteWeight);
 
-  const result = {
-    verified: fdaMatch,
-    credibility_score: score
-  };
-  
-  if (drug && sideEffect) {
-    const cacheKey = `verify_${drug}_${sideEffect}`;
+    const result = {
+      verified: fdaMatch,
+      credibility_score: score,
+      bs_meter: {
+        verdict: bsMeterResult.verdict,
+        confidence: bsMeterResult.confidence,
+        fda_side_effects_found: bsMeterResult.fda_side_effects_found,
+        fda_reports_exist: bsMeterResult.fda_reports_exist
+      }
+    };
+    
     setCache(cacheKey, result);
-  }
+    return result;
 
-  return result;
+  } catch (error) {
+    console.error(`Verification Error: ${error.message}`);
+    throw error;
+  }
 };
 
 module.exports = {
