@@ -62,7 +62,12 @@ const extractEntities = async (commentId) => {
 
 /**
  * Transforms raw NER model output into our structured entity format.
- * Maps entity groups from the biomedical model to our schema fields.
+ * The biomedical-ner-all model returns BIO-tagged entities like:
+ *   { entity: "B-Drug_brand", word: "Accutane", score: 0.99 }
+ *   { entity: "B-Sign_symptom", word: "dry", score: 1.0 }
+ *   { entity: "I-Sign_symptom", word: "lips", score: 0.99 }
+ * 
+ * B- prefix = Beginning of entity, I- prefix = Inside (continuation)
  */
 const transformNerOutput = (nerEntities) => {
   const result = {
@@ -77,24 +82,64 @@ const transformNerOutput = (nerEntities) => {
     return result;
   }
 
+  // Group consecutive tokens that belong to the same entity type
+  const groupedEntities = [];
+  let currentGroup = null;
+
   for (const entity of nerEntities) {
-    const group = (entity.entity_group || entity.entity || '').toLowerCase();
-    const word = (entity.word || '').trim();
+    const rawLabel = (entity.entity || '').trim();
+    const rawWord = (entity.word || '').trim();
+    if (!rawWord || !rawLabel) continue;
 
-    if (!word) continue;
+    // Check if this is a subword token (starts with ##) before cleaning
+    const isSubword = rawWord.startsWith('##');
+    const word = rawWord.replace(/^##/, '');
 
-    // Map biomedical NER entity groups to our schema
-    if (group.includes('drug') || group.includes('chemical')) {
-      result.drug = result.drug || word;
-    } else if (group.includes('disease') || group.includes('symptom') || group.includes('sign_symptom')) {
-      result.side_effect = result.side_effect || word;
-    } else if (group.includes('dosage') || group.includes('dose')) {
-      result.dosage = result.dosage || word;
-    } else if (group.includes('duration') || group.includes('time') || group.includes('frequency')) {
-      result.timeline_marker = result.timeline_marker || word;
+    // Strip BIO prefix (B- or I-) to get just the label
+    const isBeginning = rawLabel.startsWith('B-');
+    const isContinuation = rawLabel.startsWith('I-');
+    const label = rawLabel.replace(/^[BI]-/, '').toLowerCase();
+
+    if (isSubword && currentGroup) {
+      // Subword tokens always continue the current group, regardless of B- or I- tag
+      // The model sometimes tags subwords like ##uta as B-Medication instead of I-Medication
+      currentGroup.tokens.push({ word, isSubword: true });
+    } else if (isBeginning) {
+      // Start a new entity group
+      if (currentGroup) groupedEntities.push(currentGroup);
+      currentGroup = { label, tokens: [{ word, isSubword: false }] };
+    } else if (isContinuation && currentGroup && currentGroup.label === label) {
+      // Continue the current entity (track if it's a subword)
+      currentGroup.tokens.push({ word, isSubword });
+    } else {
+      // Unrelated token, flush current group
+      if (currentGroup) groupedEntities.push(currentGroup);
+      currentGroup = null;
+    }
+  }
+  if (currentGroup) groupedEntities.push(currentGroup);
+
+  // Map grouped entities to our schema
+  for (const group of groupedEntities) {
+    // Join tokens: subwords attach without space, separate words get spaces
+    let text = '';
+    for (const token of group.tokens) {
+      text += token.isSubword ? token.word : (text ? ' ' + token.word : token.word);
+    }
+    const label = group.label;
+
+    if (label.includes('drug') || label.includes('chemical') || label.includes('medication')) {
+      result.drug = result.drug || text;
+    } else if (label.includes('sign_symptom') || label.includes('symptom') || label.includes('disease')) {
+      result.side_effect = result.side_effect || text;
+    } else if (label.includes('dosage') || label.includes('dose') || label.includes('strength')) {
+      result.dosage = result.dosage || text;
+    } else if (label.includes('date') || label.includes('duration') || label.includes('frequency') || label.includes('time')) {
+      result.timeline_marker = result.timeline_marker || text;
     }
   }
 
+  console.log('[Bytez NER] Mapped entities:', JSON.stringify(result));
   return result;
 };
 
