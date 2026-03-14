@@ -73,6 +73,13 @@ export default function MedIntelNavbar() {
               <span className="material-symbols-outlined text-[22px] block leading-none">account_circle</span>
             </button>
             <div className="h-8 w-[1px] bg-outline-variant opacity-20 mx-2"></div>
+            <Link
+              href="/cura"
+              className="hidden md:flex bg-surface-container-high hover:bg-primary/10 text-primary px-5 py-2 rounded-xl font-semibold text-sm transition-all hover:scale-105 active:scale-95 items-center justify-center gap-2"
+            >
+              <span className="material-symbols-outlined text-[18px] block leading-none">swap_horiz</span>
+              Clinician Portal
+            </Link>
             <button className="bg-primary hover:bg-primary-container text-on-primary px-5 py-2 rounded-xl font-semibold text-sm transition-all hover:scale-105 active:scale-95 flex items-center justify-center gap-2">
               <span className="material-symbols-outlined text-[18px] block leading-none">download</span>
               Export PDF
@@ -140,10 +147,10 @@ export default function MedIntelNavbar() {
             </div>
           </div>
           <div className="space-y-1">
-            <button className="w-full flex items-center gap-3 p-3 rounded-xl hover:bg-surface-container-low transition-colors text-left">
+            <Link href="/profile" className="w-full flex items-center gap-3 p-3 rounded-xl hover:bg-surface-container-low transition-colors text-left">
               <span className="material-symbols-outlined text-on-surface-variant">person</span>
               <span className="text-sm font-medium">My Profile</span>
-            </button>
+            </Link>
             <button className="w-full flex items-center gap-3 p-3 rounded-xl hover:bg-surface-container-low transition-colors text-left">
               <span className="material-symbols-outlined text-on-surface-variant">medical_information</span>
               <span className="text-sm font-medium">Medical Records</span>
@@ -157,10 +164,10 @@ export default function MedIntelNavbar() {
               <span className="text-sm font-medium">Help & Support</span>
             </button>
             <div className="pt-2 mt-2 border-t border-outline-variant/10">
-              <button className="w-full flex items-center gap-3 p-3 rounded-xl hover:bg-error/5 transition-colors text-left text-error">
+              <Link href="/" className="w-full flex items-center gap-3 p-3 rounded-xl hover:bg-error/5 transition-colors text-left text-error">
                 <span className="material-symbols-outlined">logout</span>
-                <span className="text-sm font-medium">Sign Out</span>
-              </button>
+                <span className="text-sm font-medium">Log Out</span>
+              </Link>
             </div>
           </div>
         </div>
