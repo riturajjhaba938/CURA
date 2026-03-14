@@ -15,7 +15,7 @@ const generateToken = (id) => {
  */
 const registerUser = async (req, res) => {
   try {
-    const { name, email, password, state, district, gender, mobileNumber } = req.body;
+    const { name, email, password, state, district, gender, mobileNumber, age } = req.body;
 
     // Check if user exists (email or mobile number)
     const userExists = await User.findOne({
@@ -36,6 +36,7 @@ const registerUser = async (req, res) => {
       district,
       gender,
       mobileNumber,
+      age,
     });
 
     if (user) {
@@ -48,6 +49,7 @@ const registerUser = async (req, res) => {
         district: user.district,
         gender: user.gender,
         mobileNumber: user.mobileNumber,
+        age: user.age,
         token: generateToken(user._id),
       });
     } else {
@@ -84,6 +86,7 @@ const loginUser = async (req, res) => {
         district: user.district,
         gender: user.gender,
         mobileNumber: user.mobileNumber,
+        age: user.age,
         token: generateToken(user._id),
       });
     } else {
@@ -109,12 +112,55 @@ const getUserProfile = async (req, res) => {
     district: req.user.district,
     gender: req.user.gender,
     mobileNumber: req.user.mobileNumber,
+    age: req.user.age,
     createdAt: req.user.createdAt,
   });
+};
+
+/**
+ * Update user profile
+ * PUT /api/auth/profile
+ * Access: Private
+ */
+const updateUserProfile = async (req, res) => {
+  try {
+    const user = await User.findById(req.user.id);
+    if (!user) {
+      return res.status(404).json({ error: "User not found" });
+    }
+
+    const { name, mobileNumber, gender, age, state, district } = req.body;
+
+    if (name) user.name = name;
+    if (mobileNumber) user.mobileNumber = mobileNumber;
+    if (gender) user.gender = gender;
+    if (age) user.age = age;
+    if (state) user.state = state;
+    if (district) user.district = district;
+
+    const updatedUser = await user.save();
+    logger.info(`Profile updated for: ${updatedUser.email}`);
+
+    res.json({
+      _id: updatedUser.id,
+      name: updatedUser.name,
+      email: updatedUser.email,
+      state: updatedUser.state,
+      district: updatedUser.district,
+      gender: updatedUser.gender,
+      mobileNumber: updatedUser.mobileNumber,
+      age: updatedUser.age,
+      createdAt: updatedUser.createdAt,
+    });
+  } catch (error) {
+    logger.error(`Profile update error: ${error.message}`);
+    res.status(500).json({ error: "Server error during profile update" });
+  }
 };
 
 module.exports = {
   registerUser,
   loginUser,
   getUserProfile,
+  updateUserProfile,
 };

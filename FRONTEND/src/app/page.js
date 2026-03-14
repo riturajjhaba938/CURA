@@ -11,15 +11,71 @@ export default function HomePage() {
   const [showPortal, setShowPortal] = useState(false);
   const [showLoginPassword, setShowLoginPassword] = useState(false);
   const [showSignupPassword, setShowSignupPassword] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState("");
+
+  // Check for existing token on mount
+  useEffect(() => {
+    const token = localStorage.getItem("token");
+    if (token) {
+      setIsAuthenticated(true);
+      setShowPortal(true);
+      const user = JSON.parse(localStorage.getItem("user") || "{}");
+      if (user.role) setRole(user.role);
+    }
+  }, []);
 
   // Animate transition from auth → portal selector
-  const handleAuth = (e) => {
+  const handleAuth = async (e) => {
     e.preventDefault();
-    setFormTransition(true);
-    setTimeout(() => {
-      setIsAuthenticated(true);
-      setTimeout(() => setShowPortal(true), 50);
-    }, 500);
+    setError("");
+    setIsLoading(true);
+
+    const formData = new FormData(e.target);
+    const data = Object.fromEntries(formData.entries());
+
+    try {
+      const endpoint = isLogin ? "/auth/login" : "/auth/register";
+      const payload = isLogin 
+        ? { identifier: data.identifier, password: data.password }
+        : { 
+            name: data.name, 
+            email: data.email, 
+            password: data.password, 
+            mobileNumber: data.mobileNumber,
+            gender: data.gender === "male" ? "M" : data.gender === "female" ? "F" : "Other",
+            age: data.age,
+            state: data.state,
+            district: data.district
+          };
+
+      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}${endpoint}`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(payload),
+      });
+
+      const result = await response.json();
+
+      if (!response.ok) {
+        throw new Error(result.error || result.errors?.[0] || "Authentication failed");
+      }
+
+      // Success
+      localStorage.setItem("token", result.token);
+      localStorage.setItem("user", JSON.stringify(result));
+      
+      setFormTransition(true);
+      setTimeout(() => {
+        setIsAuthenticated(true);
+        setIsLoading(false);
+        setTimeout(() => setShowPortal(true), 50);
+      }, 500);
+
+    } catch (err) {
+      setError(err.message);
+      setIsLoading(false);
+    }
   };
 
   // Toggle between login and signup with a smooth crossfade
@@ -83,6 +139,14 @@ export default function HomePage() {
             </button>
           </div>
 
+          {/* Error Message */}
+          {error && (
+            <div className="mb-6 p-3 rounded-xl bg-error/10 border border-error/20 text-error text-xs font-medium flex items-center gap-2 animate-shake">
+              <span className="material-symbols-outlined text-sm">error</span>
+              {error}
+            </div>
+          )}
+
           {/* Form Content */}
           <form onSubmit={handleAuth} className="space-y-5">
             {isLogin ? (
@@ -93,8 +157,10 @@ export default function HomePage() {
                   <div className="relative">
                     <span className="absolute left-4 top-1/2 -translate-y-1/2 material-symbols-outlined text-on-surface-variant text-[20px]">person</span>
                     <input
+                      name="identifier"
                       type="text"
-                      placeholder="Enter your username"
+                      placeholder="Enter your username or email"
+                      required
                       className="w-full bg-surface-container-lowest border border-outline-variant/30 rounded-xl py-3 pl-11 pr-4 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition-all placeholder:text-on-surface-variant/50"
                     />
                   </div>
@@ -105,8 +171,10 @@ export default function HomePage() {
                   <div className="relative">
                     <span className="absolute left-4 top-1/2 -translate-y-1/2 material-symbols-outlined text-on-surface-variant text-[20px]">lock</span>
                     <input
+                      name="password"
                       type={showLoginPassword ? "text" : "password"}
                       placeholder="Enter your password"
+                      required
                       className="w-full bg-surface-container-lowest border border-outline-variant/30 rounded-xl py-3 pl-11 pr-12 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition-all placeholder:text-on-surface-variant/50"
                     />
                     <button
@@ -133,10 +201,17 @@ export default function HomePage() {
 
                 <button
                   type="submit"
-                  className="w-full py-3.5 bg-primary text-on-primary rounded-xl font-bold tracking-wide hover:bg-primary-container transition-all hover:-translate-y-1 shadow-lg shadow-primary/20 active:translate-y-0 flex items-center justify-center gap-2"
+                  disabled={isLoading}
+                  className="w-full py-3.5 bg-primary text-on-primary rounded-xl font-bold tracking-wide hover:bg-primary-container transition-all hover:-translate-y-1 shadow-lg shadow-primary/20 active:translate-y-0 flex items-center justify-center gap-2 disabled:opacity-70 disabled:cursor-not-allowed"
                 >
-                  <span className="material-symbols-outlined text-xl">login</span>
-                  Sign In
+                  {isLoading ? (
+                    <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin"></div>
+                  ) : (
+                    <>
+                      <span className="material-symbols-outlined text-xl">login</span>
+                      Sign In
+                    </>
+                  )}
                 </button>
               </div>
             ) : (
@@ -147,8 +222,10 @@ export default function HomePage() {
                   <div className="relative">
                     <span className="absolute left-4 top-1/2 -translate-y-1/2 material-symbols-outlined text-on-surface-variant text-[20px]">person_add</span>
                     <input
+                      name="name"
                       type="text"
                       placeholder="Enter your name"
+                      required
                       className="w-full bg-surface-container-lowest border border-outline-variant/30 rounded-xl py-3 pl-11 pr-4 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition-all placeholder:text-on-surface-variant/50"
                     />
                   </div>
@@ -159,8 +236,10 @@ export default function HomePage() {
                   <div className="relative">
                     <span className="absolute left-4 top-1/2 -translate-y-1/2 material-symbols-outlined text-on-surface-variant text-[20px]">mail</span>
                     <input
+                      name="email"
                       type="email"
                       placeholder="Enter your email"
+                      required
                       className="w-full bg-surface-container-lowest border border-outline-variant/30 rounded-xl py-3 pl-11 pr-4 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition-all placeholder:text-on-surface-variant/50"
                     />
                   </div>
@@ -173,8 +252,11 @@ export default function HomePage() {
                       +91
                     </div>
                     <input
+                      name="mobileNumber"
                       type="tel"
                       placeholder="Enter phone number"
+                      required
+                      pattern="[0-9]{10}"
                       className="w-full bg-surface-container-lowest border border-l-0 border-outline-variant/30 rounded-r-xl py-3 pl-3 pr-4 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition-all placeholder:text-on-surface-variant/50 relative z-10 focus:border-l"
                     />
                   </div>
@@ -186,6 +268,8 @@ export default function HomePage() {
                     <div className="relative">
                       <span className="absolute left-3 top-1/2 -translate-y-1/2 material-symbols-outlined text-on-surface-variant text-[18px] pointer-events-none">wc</span>
                       <select
+                        name="gender"
+                        required
                         defaultValue=""
                         className="w-full bg-surface-container-lowest border border-outline-variant/30 rounded-xl py-3 pl-9 pr-8 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition-all appearance-none cursor-pointer"
                       >
@@ -203,8 +287,40 @@ export default function HomePage() {
                     <div className="relative">
                       <span className="absolute left-3 top-1/2 -translate-y-1/2 material-symbols-outlined text-on-surface-variant text-[18px]">cake</span>
                       <input
+                        name="age"
                         type="number"
                         placeholder="Enter age"
+                        required
+                        className="w-full bg-surface-container-lowest border border-outline-variant/30 rounded-xl py-3 pl-9 pr-4 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition-all placeholder:text-on-surface-variant/50"
+                      />
+                    </div>
+                  </div>
+                </div>
+
+                <div className="grid grid-cols-2 gap-4">
+                  <div className="space-y-2">
+                    <label className="text-xs font-bold text-on-surface uppercase tracking-wider pl-1">State</label>
+                    <div className="relative">
+                      <span className="absolute left-3 top-1/2 -translate-y-1/2 material-symbols-outlined text-on-surface-variant text-[18px]">map</span>
+                      <input
+                        name="state"
+                        type="text"
+                        placeholder="State"
+                        required
+                        className="w-full bg-surface-container-lowest border border-outline-variant/30 rounded-xl py-3 pl-9 pr-4 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition-all placeholder:text-on-surface-variant/50"
+                      />
+                    </div>
+                  </div>
+
+                  <div className="space-y-2">
+                    <label className="text-xs font-bold text-on-surface uppercase tracking-wider pl-1">District</label>
+                    <div className="relative">
+                      <span className="absolute left-3 top-1/2 -translate-y-1/2 material-symbols-outlined text-on-surface-variant text-[18px]">location_on</span>
+                      <input
+                        name="district"
+                        type="text"
+                        placeholder="District"
+                        required
                         className="w-full bg-surface-container-lowest border border-outline-variant/30 rounded-xl py-3 pl-9 pr-4 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition-all placeholder:text-on-surface-variant/50"
                       />
                     </div>
@@ -216,8 +332,11 @@ export default function HomePage() {
                   <div className="relative">
                     <span className="absolute left-4 top-1/2 -translate-y-1/2 material-symbols-outlined text-on-surface-variant text-[20px]">lock</span>
                     <input
+                      name="password"
                       type={showSignupPassword ? "text" : "password"}
                       placeholder="Create a password"
+                      required
+                      minLength={6}
                       className="w-full bg-surface-container-lowest border border-outline-variant/30 rounded-xl py-3 pl-11 pr-12 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition-all placeholder:text-on-surface-variant/50"
                     />
                     <button
@@ -234,10 +353,17 @@ export default function HomePage() {
 
                 <button
                   type="submit"
-                  className="w-full py-3.5 mt-2 bg-primary text-on-primary rounded-xl font-bold tracking-wide hover:bg-primary-container transition-all hover:-translate-y-1 shadow-lg shadow-primary/20 active:translate-y-0 flex items-center justify-center gap-2"
+                  disabled={isLoading}
+                  className="w-full py-3.5 mt-2 bg-primary text-on-primary rounded-xl font-bold tracking-wide hover:bg-primary-container transition-all hover:-translate-y-1 shadow-lg shadow-primary/20 active:translate-y-0 flex items-center justify-center gap-2 disabled:opacity-70 disabled:cursor-not-allowed"
                 >
-                  <span className="material-symbols-outlined text-xl">person_add</span>
-                  Create Account
+                  {isLoading ? (
+                    <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin"></div>
+                  ) : (
+                    <>
+                      <span className="material-symbols-outlined text-xl">person_add</span>
+                      Create Account
+                    </>
+                  )}
                 </button>
               </div>
             )}

@@ -6,12 +6,65 @@ import { useRouter } from "next/navigation";
 
 export default function LoginPage() {
   const [isLogin, setIsLogin] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState("");
   const router = useRouter();
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    // Redirect securely to clinician dashboard without requiring input
-    router.push("/cura");
+    setIsLoading(true);
+    setError("");
+
+    const formData = new FormData(e.target);
+
+    try {
+      if (isLogin) {
+        // LOGIN
+        const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/auth/login`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            identifier: formData.get("identifier"),
+            password: formData.get("password"),
+          }),
+        });
+
+        const data = await response.json();
+        if (!response.ok) throw new Error(data.error || "Login failed");
+
+        localStorage.setItem("token", data.token);
+        localStorage.setItem("user", JSON.stringify(data));
+        localStorage.setItem("role", "clinician");
+        router.push("/cura");
+      } else {
+        // SIGNUP
+        const genderMap = { male: "M", female: "F", other: "Other" };
+        const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/auth/register`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            name: formData.get("name"),
+            email: formData.get("email"),
+            password: formData.get("password") || "defaultPass123",
+            mobileNumber: formData.get("phone"),
+            gender: genderMap[formData.get("gender")] || "Other",
+            age: parseInt(formData.get("age")) || undefined,
+          }),
+        });
+
+        const data = await response.json();
+        if (!response.ok) throw new Error(data.error || "Registration failed");
+
+        localStorage.setItem("token", data.token);
+        localStorage.setItem("user", JSON.stringify(data));
+        localStorage.setItem("role", "clinician");
+        router.push("/cura");
+      }
+    } catch (err) {
+      setError(err.message);
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   return (
@@ -40,7 +93,7 @@ export default function LoginPage() {
         <div className="flex p-1 bg-surface-container-high rounded-xl mb-8">
           <button
             type="button"
-            onClick={() => setIsLogin(true)}
+            onClick={() => { setIsLogin(true); setError(""); }}
             className={`flex-1 py-2 text-sm font-semibold rounded-lg transition-all ${
               isLogin ? "bg-white text-primary shadow-sm" : "text-on-surface-variant hover:text-on-surface"
             }`}
@@ -49,7 +102,7 @@ export default function LoginPage() {
           </button>
           <button
             type="button"
-            onClick={() => setIsLogin(false)}
+            onClick={() => { setIsLogin(false); setError(""); }}
             className={`flex-1 py-2 text-sm font-semibold rounded-lg transition-all ${
               !isLogin ? "bg-white text-primary shadow-sm" : "text-on-surface-variant hover:text-on-surface"
             }`}
@@ -57,6 +110,13 @@ export default function LoginPage() {
             Sign Up
           </button>
         </div>
+
+        {/* Error Banner */}
+        {error && (
+          <div className="mb-4 p-3 rounded-xl bg-error/10 border border-error/20 text-error text-sm font-medium text-center">
+            {error}
+          </div>
+        )}
 
         {/* Form Content */}
         <form onSubmit={handleSubmit} className="space-y-5">
@@ -69,7 +129,9 @@ export default function LoginPage() {
                   <span className="absolute left-4 top-1/2 -translate-y-1/2 material-symbols-outlined text-on-surface-variant text-[20px]">person</span>
                   <input
                     type="text"
+                    name="identifier"
                     placeholder="Enter your username"
+                    required
                     className="w-full bg-surface-container-lowest border border-outline-variant/30 rounded-xl py-3 pl-11 pr-4 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition-all placeholder:text-on-surface-variant/50"
                   />
                 </div>
@@ -81,7 +143,9 @@ export default function LoginPage() {
                   <span className="absolute left-4 top-1/2 -translate-y-1/2 material-symbols-outlined text-on-surface-variant text-[20px]">lock</span>
                   <input
                     type="password"
+                    name="password"
                     placeholder="Enter your password"
+                    required
                     className="w-full bg-surface-container-lowest border border-outline-variant/30 rounded-xl py-3 pl-11 pr-4 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition-all placeholder:text-on-surface-variant/50"
                   />
                 </div>
@@ -99,9 +163,12 @@ export default function LoginPage() {
 
               <button
                 type="submit"
-                className="w-full py-3.5 bg-primary text-on-primary rounded-xl font-bold tracking-wide hover:bg-primary-container transition-all hover:-translate-y-1 shadow-lg shadow-primary/20 active:translate-y-0"
+                disabled={isLoading}
+                className="w-full py-3.5 bg-primary text-on-primary rounded-xl font-bold tracking-wide hover:bg-primary-container transition-all hover:-translate-y-1 shadow-lg shadow-primary/20 active:translate-y-0 disabled:opacity-70 disabled:hover:translate-y-0 flex items-center justify-center gap-2"
               >
-                Sign In
+                {isLoading ? (
+                  <><div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin"></div> Signing In...</>
+                ) : "Sign In"}
               </button>
             </div>
           ) : (
@@ -113,7 +180,9 @@ export default function LoginPage() {
                   <span className="absolute left-4 top-1/2 -translate-y-1/2 material-symbols-outlined text-on-surface-variant text-[20px]">person_add</span>
                   <input
                     type="text"
+                    name="name"
                     placeholder="John Doe"
+                    required
                     className="w-full bg-surface-container-lowest border border-outline-variant/30 rounded-xl py-3 pl-11 pr-4 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition-all placeholder:text-on-surface-variant/50"
                   />
                 </div>
@@ -125,7 +194,24 @@ export default function LoginPage() {
                   <span className="absolute left-4 top-1/2 -translate-y-1/2 material-symbols-outlined text-on-surface-variant text-[20px]">mail</span>
                   <input
                     type="email"
+                    name="email"
                     placeholder="john@example.com"
+                    required
+                    className="w-full bg-surface-container-lowest border border-outline-variant/30 rounded-xl py-3 pl-11 pr-4 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition-all placeholder:text-on-surface-variant/50"
+                  />
+                </div>
+              </div>
+
+              <div className="space-y-2">
+                <label className="text-xs font-bold text-on-surface uppercase tracking-wider pl-1">Password</label>
+                <div className="relative">
+                  <span className="absolute left-4 top-1/2 -translate-y-1/2 material-symbols-outlined text-on-surface-variant text-[20px]">lock</span>
+                  <input
+                    type="password"
+                    name="password"
+                    placeholder="Create a password"
+                    required
+                    minLength={6}
                     className="w-full bg-surface-container-lowest border border-outline-variant/30 rounded-xl py-3 pl-11 pr-4 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition-all placeholder:text-on-surface-variant/50"
                   />
                 </div>
@@ -139,7 +225,9 @@ export default function LoginPage() {
                   </div>
                   <input
                     type="tel"
+                    name="phone"
                     placeholder="9876543210"
+                    required
                     className="w-full bg-surface-container-lowest border border-l-0 border-outline-variant/30 rounded-r-xl py-3 pl-3 pr-4 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition-all placeholder:text-on-surface-variant/50 relative z-10 focus:border-l"
                   />
                 </div>
@@ -151,7 +239,9 @@ export default function LoginPage() {
                   <div className="relative">
                     <span className="absolute left-3 top-1/2 -translate-y-1/2 material-symbols-outlined text-on-surface-variant text-[18px] pointer-events-none">wc</span>
                     <select
+                      name="gender"
                       defaultValue=""
+                      required
                       className="w-full bg-surface-container-lowest border border-outline-variant/30 rounded-xl py-3 pl-9 pr-8 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition-all appearance-none cursor-pointer"
                     >
                       <option value="" disabled hidden>Select</option>
@@ -169,6 +259,7 @@ export default function LoginPage() {
                     <span className="absolute left-3 top-1/2 -translate-y-1/2 material-symbols-outlined text-on-surface-variant text-[18px]">cake</span>
                     <input
                       type="number"
+                      name="age"
                       placeholder="e.g. 25"
                       className="w-full bg-surface-container-lowest border border-outline-variant/30 rounded-xl py-3 pl-9 pr-4 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition-all placeholder:text-on-surface-variant/50"
                     />
@@ -178,9 +269,12 @@ export default function LoginPage() {
 
               <button
                 type="submit"
-                className="w-full py-3.5 mt-2 bg-primary text-on-primary rounded-xl font-bold tracking-wide hover:bg-primary-container transition-all hover:-translate-y-1 shadow-lg shadow-primary/20 active:translate-y-0"
+                disabled={isLoading}
+                className="w-full py-3.5 mt-2 bg-primary text-on-primary rounded-xl font-bold tracking-wide hover:bg-primary-container transition-all hover:-translate-y-1 shadow-lg shadow-primary/20 active:translate-y-0 disabled:opacity-70 disabled:hover:translate-y-0 flex items-center justify-center gap-2"
               >
-                Create Account
+                {isLoading ? (
+                  <><div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin"></div> Creating Account...</>
+                ) : "Create Account"}
               </button>
             </div>
           )}

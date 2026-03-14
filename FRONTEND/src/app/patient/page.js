@@ -1,6 +1,54 @@
+"use client";
+import { useState, useEffect } from "react";
 import Footer from "@/components/Footer";
 
 export default function PatientHome() {
+  const [user, setUser] = useState(null);
+  const [searchQuery, setSearchQuery] = useState("");
+  const [isSearching, setIsSearching] = useState(false);
+  const [searchResult, setSearchResult] = useState(null);
+  const [searchError, setSearchError] = useState("");
+
+  useEffect(() => {
+    const storedUser = localStorage.getItem("user");
+    if (storedUser) {
+      setUser(JSON.parse(storedUser));
+    }
+  }, []);
+
+  const handleAnalyze = async (e) => {
+    e.preventDefault();
+    if (!searchQuery.trim()) return;
+
+    setIsSearching(true);
+    setSearchError("");
+    setSearchResult(null);
+
+    try {
+      const token = localStorage.getItem("token");
+      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/scrape`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          ...(token && { "Authorization": `Bearer ${token}` }),
+        },
+        body: JSON.stringify({ drug: searchQuery, mode: "quick" }),
+      });
+
+      const result = await response.json();
+
+      if (!response.ok) {
+        throw new Error(result.error || "Analysis failed");
+      }
+
+      setSearchResult(result);
+    } catch (err) {
+      setSearchError(err.message);
+    } finally {
+      setIsSearching(false);
+    }
+  };
+
   return (
     <>
       <main className="relative min-h-screen overflow-hidden">
@@ -15,26 +63,44 @@ export default function PatientHome() {
                 Patient Intelligence
               </span>
               <h1 className="font-[Manrope] text-6xl md:text-7xl font-light tracking-tight text-on-surface">
-                Understand your <span className="text-primary font-semibold italic">health story</span>
+                {user?.name ? (
+                  <>Welcome back, <span className="text-primary font-semibold">{user.name.split(" ")[0]}</span></>
+                ) : (
+                  <>Understand your <span className="text-primary font-semibold italic">health story</span></>
+                )}
               </h1>
             </div>
 
             {/* Search Bar */}
             <div className="relative max-w-2xl mx-auto group">
               <div className="absolute -inset-1 bg-gradient-to-r from-primary/20 to-primary-container/20 rounded-full blur opacity-25 group-hover:opacity-50 transition duration-1000"></div>
-              <div className="relative glass-card rounded-full p-2 flex items-center antigravity-shadow">
+              <form onSubmit={handleAnalyze} className="relative glass-card rounded-full p-2 flex items-center antigravity-shadow">
                 <div className="pl-6 pr-3 text-primary">
-                  <span className="material-symbols-outlined">search</span>
+                  {isSearching ? (
+                    <div className="w-5 h-5 border-2 border-primary/30 border-t-primary rounded-full animate-spin"></div>
+                  ) : (
+                    <span className="material-symbols-outlined">search</span>
+                  )}
                 </div>
                 <input
                   className="w-full bg-transparent border-none focus:ring-0 focus:outline-none text-lg placeholder:text-on-surface-variant/50 py-4"
                   placeholder="Ask anything about your clinical data..."
                   type="text"
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                  disabled={isSearching}
                 />
-                <button className="bg-primary text-on-primary h-12 px-8 rounded-full font-medium hover:bg-primary-container transition-all">
-                  Analyze
+                <button 
+                  type="submit"
+                  disabled={isSearching}
+                  className="bg-primary text-on-primary h-12 px-8 rounded-full font-medium hover:bg-primary-container transition-all disabled:opacity-70"
+                >
+                  {isSearching ? "Analyzing..." : "Analyze"}
                 </button>
-              </div>
+              </form>
+              {searchError && (
+                <p className="mt-4 text-error text-sm font-medium">{searchError}</p>
+              )}
             </div>
 
             {/* Floating Chips */}

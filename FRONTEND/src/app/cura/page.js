@@ -1,7 +1,46 @@
+"use client";
+import { useState } from "react";
 import Footer from "@/components/Footer";
 import FAB from "@/components/FAB";
 
 export default function CuraSearchDiscovery() {
+  const [searchQuery, setSearchQuery] = useState("");
+  const [isAnalyzing, setIsAnalyzing] = useState(false);
+  const [error, setError] = useState("");
+
+  const handleAnalyze = async (e) => {
+    e.preventDefault();
+    if (!searchQuery.trim()) return;
+
+    setIsAnalyzing(true);
+    setError("");
+
+    try {
+      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/scrape`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "Authorization": `Bearer ${localStorage.getItem("token")}`
+        },
+        body: JSON.stringify({ medication: searchQuery })
+      });
+
+      const result = await response.json();
+
+      if (!response.ok) {
+        throw new Error(result.error || "Failed to analyze treatment");
+      }
+
+      // Proactively navigate to treatment or show result
+      console.log("Analysis Result:", result);
+      window.location.href = `/cura/treatment?drug=${encodeURIComponent(searchQuery)}`;
+
+    } catch (err) {
+      setError(err.message);
+      setIsAnalyzing(false);
+    }
+  };
+
   return (
     <>
       <main className="pb-24 px-6 relative flex flex-col items-center">
@@ -30,25 +69,42 @@ export default function CuraSearchDiscovery() {
 
           {/* Search Bar */}
           <div className="w-full max-w-3xl relative group animate-fadeInUp stagger-3">
-            <div className="glass-morphism rounded-full p-2 flex items-center gap-3 transition-all duration-500 hover:shadow-xl hover:scale-[1.01]">
+            <form onSubmit={handleAnalyze} className="glass-morphism rounded-full p-2 flex items-center gap-3 transition-all duration-500 hover:shadow-xl hover:scale-[1.01]">
               <div className="pl-4 text-primary">
-                <span className="material-symbols-outlined text-2xl">search</span>
+                {isAnalyzing ? (
+                  <div className="w-5 h-5 border-2 border-primary/30 border-t-primary rounded-full animate-spin"></div>
+                ) : (
+                  <span className="material-symbols-outlined text-2xl">search</span>
+                )}
               </div>
               <input
                 className="w-full bg-transparent border-none focus:ring-0 focus:outline-none text-base disabled:opacity-50 placeholder:text-outline-variant text-on-surface py-3"
                 placeholder="Search any treatment or symptom..."
                 type="text"
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                disabled={isAnalyzing}
               />
               {/* Mic Icon */}
-              <button title="Voice Search" className="p-3 text-on-surface-variant hover:text-primary hover:bg-primary/10 rounded-full transition-colors flex items-center justify-center">
+              <button type="button" title="Voice Search" className="p-3 text-on-surface-variant hover:text-primary hover:bg-primary/10 rounded-full transition-colors flex items-center justify-center">
                 <span className="material-symbols-outlined text-xl" style={{ fontVariationSettings: "'FILL' 1" }}>mic</span>
               </button>
               {/* Analyze Button */}
-              <button className="hidden md:flex items-center gap-2 px-6 py-3 bg-primary text-on-primary rounded-full font-bold text-sm hover:bg-primary-container transition-all hover:scale-105 active:scale-95 hover:shadow-lg hover:shadow-primary/20 mr-1">
-                Analyze
+              <button 
+                type="submit"
+                disabled={isAnalyzing}
+                className="hidden md:flex items-center gap-2 px-6 py-3 bg-primary text-on-primary rounded-full font-bold text-sm hover:bg-primary-container transition-all hover:scale-105 active:scale-95 hover:shadow-lg hover:shadow-primary/20 mr-1 disabled:opacity-70"
+              >
+                {isAnalyzing ? "Analyzing..." : "Analyze"}
                 <span className="material-symbols-outlined text-sm">arrow_forward</span>
               </button>
-            </div>
+            </form>
+
+            {error && (
+              <div className="absolute -bottom-20 left-1/2 -translate-x-1/2 text-error text-sm font-medium animate-shake">
+                {error}
+              </div>
+            )}
 
             {/* Live Logic */}
             <div className="absolute -bottom-14 left-10 flex items-center gap-3">

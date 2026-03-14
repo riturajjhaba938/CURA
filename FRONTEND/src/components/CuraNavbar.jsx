@@ -86,6 +86,26 @@ export default function CuraNavbar() {
   const pathname = usePathname();
   const [showProfile, setShowProfile] = useState(false);
   const [showSettings, setShowSettings] = useState(false);
+  const [user, setUser] = useState(null);
+
+  useEffect(() => {
+    const storedUser = localStorage.getItem("user");
+    if (storedUser) {
+      setUser(JSON.parse(storedUser));
+    }
+  }, []);
+
+  const handleLogout = () => {
+    localStorage.removeItem("token");
+    localStorage.removeItem("user");
+    setUser(null);
+    window.location.href = "/";
+  };
+
+  const getInitials = (name) => {
+    if (!name) return "??";
+    return name.split(" ").map(n => n[0]).join("").toUpperCase().slice(0, 2);
+  };
 
   // Close dropdowns on scroll
   useEffect(() => {
@@ -128,9 +148,11 @@ export default function CuraNavbar() {
           {/* Profile */}
           <button
             onClick={() => { setShowProfile(!showProfile); setShowSettings(false); }}
-            className={`p-2 rounded-full transition-all ${showProfile ? "bg-primary/10 text-primary" : "text-on-surface-variant hover:text-primary hover:bg-primary/5"}`}
+            className={`flex items-center gap-2 p-1.5 rounded-full transition-all ${showProfile ? "bg-primary/10" : "hover:bg-primary/5"}`}
           >
-            <span className="material-symbols-outlined text-[22px]">account_circle</span>
+            <div className={`w-8 h-8 rounded-full flex items-center justify-center text-xs font-bold transition-colors ${showProfile ? "bg-primary text-on-primary" : "bg-primary/10 text-primary"}`}>
+              {getInitials(user?.name)}
+            </div>
           </button>
 
           <div className="h-8 w-[1px] bg-outline-variant opacity-20 mx-2"></div>
@@ -193,14 +215,14 @@ export default function CuraNavbar() {
         <div className="fixed top-[84px] right-8 z-[60] w-80 bg-white rounded-2xl p-6 shadow-2xl shadow-black/10 border border-outline-variant/10">
           <div className="flex items-center gap-4 mb-6 pb-6 border-b border-outline-variant/10">
             <div className="w-14 h-14 rounded-full bg-primary flex items-center justify-center text-on-primary text-xl font-bold">
-              DR
+              {getInitials(user?.name)}
             </div>
-            <div>
-              <h3 className="font-[Manrope] font-bold">Dr. Rachel Kim</h3>
-              <p className="text-sm text-on-surface-variant">Neural Oncology Specialist</p>
+            <div className="min-w-0">
+              <h3 className="font-[Manrope] font-bold truncate">{user?.name || "Guest User"}</h3>
+              <p className="text-sm text-on-surface-variant truncate">{user?.email}</p>
               <span className="text-xs text-primary font-medium flex items-center gap-1 mt-1">
                 <span className="w-2 h-2 rounded-full bg-primary animate-pulse"></span>
-                Online
+                Active Session
               </span>
             </div>
           </div>
@@ -218,10 +240,13 @@ export default function CuraNavbar() {
               <span className="text-sm font-medium">Help & Support</span>
             </button>
             <div className="pt-2 mt-2 border-t border-outline-variant/10">
-              <Link href="/" className="w-full flex items-center gap-3 p-3 rounded-xl hover:bg-error/5 transition-colors text-left text-error">
+              <button 
+                onClick={handleLogout}
+                className="w-full flex items-center gap-3 p-3 rounded-xl hover:bg-error/5 transition-colors text-left text-error"
+              >
                 <span className="material-symbols-outlined">logout</span>
                 <span className="text-sm font-medium">Log Out</span>
-              </Link>
+              </button>
             </div>
           </div>
         </div>

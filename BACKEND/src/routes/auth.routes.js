@@ -1,6 +1,6 @@
 const express = require("express");
 const router = express.Router();
-const { registerUser, loginUser, getUserProfile } = require("../controllers/auth.controller");
+const { registerUser, loginUser, getUserProfile, updateUserProfile } = require("../controllers/auth.controller");
 const { protect } = require("../middleware/authMiddleware");
 const { check, validationResult } = require("express-validator");
 
@@ -20,10 +20,10 @@ router.post(
     check("name", "Name is required").notEmpty().trim(),
     check("email", "Please include a valid email").isEmail().normalizeEmail(),
     check("password", "Password must be at least 6 characters").isLength({ min: 6 }),
-    check("state", "State is required").notEmpty().trim(),
-    check("district", "District is required").notEmpty().trim(),
-    check("gender", "Gender must be M, F, or Other").isIn(["M", "F", "Other"]),
-    check("mobileNumber", "Please enter a valid 10-digit mobile number").matches(/^\d{10}$/),
+    check("state", "State is required").optional().trim(),
+    check("district", "District is required").optional().trim(),
+    check("gender", "Gender must be M, F, or Other").optional().isIn(["M", "F", "Other"]),
+    check("mobileNumber", "Please enter a valid 10-digit mobile number").optional().matches(/^\d{10}$/),
   ],
   validate,
   registerUser
@@ -42,5 +42,8 @@ router.post(
 
 // GET /api/auth/profile (Protected route)
 router.get("/profile", protect, getUserProfile);
+
+// PUT /api/auth/profile (Protected route)
+router.put("/profile", protect, updateUserProfile);
 
 module.exports = router;

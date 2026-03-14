@@ -1,6 +1,17 @@
+"use client";
+import { useState, useEffect } from "react";
 import Footer from "@/components/Footer";
 
 export default function PatientPlan() {
+  const [user, setUser] = useState(null);
+
+  useEffect(() => {
+    const stored = localStorage.getItem("user");
+    if (stored) setUser(JSON.parse(stored));
+  }, []);
+
+  const firstName = user?.name?.split(" ")[0] || "there";
+
   return (
     <>
       <main className="flex-grow max-w-7xl mx-auto w-full px-6 py-10 space-y-12">
@@ -9,7 +20,7 @@ export default function PatientPlan() {
           <div className="lg:col-span-2 space-y-4">
             <span className="text-primary font-bold tracking-widest text-xs uppercase">Your Recovery Status</span>
             <h1 className="font-[Manrope] text-5xl font-extrabold text-on-surface leading-tight tracking-tight">
-              You&apos;re doing <span className="text-primary">excellent</span>, Sarah.
+              You&apos;re doing <span className="text-primary">excellent</span>, {firstName}.
             </h1>
             <p className="text-on-surface-variant text-lg max-w-xl leading-relaxed">
               You&apos;ve completed 65% of your treatment plan. Your energy levels are trending upward compared to last week.

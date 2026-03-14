@@ -1,13 +1,24 @@
+"use client";
+import { useState, useEffect } from "react";
 import Footer from "@/components/Footer";
 
 export default function PatientDashboard() {
+  const [user, setUser] = useState(null);
+
+  useEffect(() => {
+    const stored = localStorage.getItem("user");
+    if (stored) setUser(JSON.parse(stored));
+  }, []);
+
+  const firstName = user?.name?.split(" ")[0] || "there";
+
   return (
     <>
       <main className="max-w-7xl mx-auto px-8 py-12 space-y-12">
         {/* Header */}
         <header className="flex flex-col md:flex-row md:items-end justify-between gap-6">
           <div className="space-y-2">
-            <h1 className="text-4xl md:text-5xl font-[Manrope] font-bold tracking-tight">Good morning, Sarah.</h1>
+            <h1 className="text-4xl md:text-5xl font-[Manrope] font-bold tracking-tight">Good morning, {firstName}.</h1>
             <p className="text-lg text-on-surface-variant max-w-xl">
               Your neural resonance is showing steady improvement since last Tuesday&apos;s session.
             </p>

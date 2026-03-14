@@ -37,7 +37,6 @@ const scrapeLimiter = rateLimit({
 });
 
 // Database Connection Constants
-const PORT = process.env.PORT || 3000;
 const MONGODB_URI = process.env.MONGODB_URI || process.env.MONGO_URI;
 
 // Main Routes
@@ -54,11 +53,6 @@ app.use('/api/hospitals', hospitalsRoutes);
 // Health check
 app.get("/", (req, res) => {
   res.json({ status: "ok", message: "Drug Insights API is running" });
-});
-
-// Start Server Immediately
-app.listen(PORT, () => {
-  console.log(`Backend AI processing logic is running on port ${PORT}`);
 });
 
 // Connect to MongoDB in background
