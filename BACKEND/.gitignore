@@ -1,12 +1,2 @@
-
-node_modules/
-
+node_modules
 .env
-
-# Test and temp files
-test.js
-test_bytez.js
-bytez_output.txt
-
-# Lock file
-package-lock.json
