@@ -1,5 +1,5 @@
 "use client";
-import FAB from "@/components/FAB";
+import Footer from "@/components/Footer";
 import { useState, useEffect } from "react";
 import BSMeterUI from "@/components/BSMeterUI";
 import ChronologicalTimeline from "@/components/ChronologicalTimeline";
@@ -569,7 +569,8 @@ export default function CuraTreatment() {
       </section>
 
       <div className="h-24"></div>
-      <FAB />
+
+
     </div>
   );
 }

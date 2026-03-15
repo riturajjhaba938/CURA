@@ -1,4 +1,5 @@
-import FAB from "@/components/FAB";
+import Footer from "@/components/Footer";
+
 
 export default function CuraDashboard() {
   return (
