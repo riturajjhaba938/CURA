@@ -77,14 +77,54 @@ CURA is a state-of-the-art medical platform designed to bridge the gap between p
 
 ---
 
-## **Technical Architecture**
+## **Technical Architecture (3D Layered View)**
 
-The project is architected as a decoupled full-stack application:
+<div align="center">
+  <img src="https://img.shields.io/badge/Frontend-Next.js%2014-blue?style=for-the-badge&logo=nextdotjs" />
+  <img src="https://img.shields.io/badge/Backend-Node.js%20Express-green?style=for-the-badge&logo=express" />
+  <img src="https://img.shields.io/badge/Database-MongoDB%20Atlas-black?style=for-the-badge&logo=mongodb" />
+</div>
 
-- **Frontend**: [Next.js](https://nextjs.org/) (App Router), Tailwind CSS, Recharts.
-- **Backend**: [Node.js](https://nodejs.org/) / Express, MongoDB Atlas (Mongoose).
-- **AI Layer**: Python-based scrapers and Node-integrated AI services (NER, PII-Masking, NLI).
-- **Infrastructure**: JWT Authentication, Express Rate Limit, Centralized Error Handling.
+<br/>
+
+```mermaid
+graph TD
+    subgraph CURA_STACK [3D ARCHITECTURAL STACK]
+    direction BT
+    
+    L3[📦 LAYER 3: THE INTELLIGENCE CORE]
+    L2[⚙️ LAYER 2: THE LOGIC ENGINE]
+    L1[🖥️ LAYER 1: THE INTERFACE GLASS]
+    
+    L3 --- L2
+    L2 --- L1
+    end
+    
+    style L1 fill:#3b82f6,stroke:#1d4ed8,stroke-width:2px,color:#fff
+    style L2 fill:#10b981,stroke:#047857,stroke-width:2px,color:#fff
+    style L3 fill:#111827,stroke:#000,stroke-width:2px,color:#fff
+```
+
+### **🖥️ Layer 1: The Interface (Glass)**
+> **The user-facing "Glass" layer. Built for speed and accessibility.**
+- **Framework**: `Next.js 14` (App Router)
+- **Design System**: `Tailwind CSS` + `Lucide Icons`
+- **Data Viz**: `Recharts` (3D Line & Area Graphs)
+- **State**: `React Server Components`
+
+### **⚙️ Layer 2: The Logic (Engine)**
+> **The "Engine" layer. Managing security, data flow, and real-time processing.**
+- **Runtime**: `Node.js` (LTS)
+- **API Architecture**: `RESTful Express Server`
+- **Security**: `JWT Authentication` + `Bcrypt` + `Helmet`
+- **Rate Limiting**: `Express-Rate-Limit` (40 req/hr)
+
+### **📦 Layer 3: The Intelligence (Core)**
+> **The "Core" layer. Where raw text becomes medical insight.**
+- **AI Models**: `Bytez` (Biomedical NER, PII Redaction)
+- **Fact-Checking**: `OpenFDA API` + `Natural Language Inference`
+- **Scraping**: `Python 3.10` (Asynchronous Process Spawning)
+- **Storage**: `MongoDB Atlas` (Document Store)
 
 ---
 
@@ -223,10 +263,20 @@ The output of the AI pipeline:
 
 ---
 
+## **The Team: CodeBros**
+
+- **Rituraj Jha** (Team Lead & AI Strategy) - [@riturajjhaba938](https://github.com/riturajjhaba938)
+- **Swaraj Prajapati** (Frontend & UX Lead) - [@SwarajPrajapati2006](https://github.com/SwarajPrajapati2006)
+- **Rishab Chandgothia** (Backend & Data Engineer) - [@rishab11250](https://github.com/rishab11250)
+- **Nikhil Raj** (UI / UX, Testing & Integration) - [@nikhilraj-13](https://github.com/nikhilraj-13)
+
+---
+
 ## **Contact**
 
 **Contact**: 
-- **GitHub**: [riturajjhaba938/CURA](https://github.com/riturajjhaba938/CURA)
+- **Main Repository**: [riturajjhaba938/CURA](https://github.com/riturajjhaba938/CURA)
+- **Project Site**: [CURA Medical Intelligence](https://cura-ai.med)
 
 ---
 *Disclaimer: CURA is an AI-driven research tool and should not be used for medical diagnosis.*
