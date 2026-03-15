@@ -1,10 +1,36 @@
 "use client";
 import FAB from "@/components/FAB";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
 export default function CuraTreatment() {
   const [costRangeIndex, setCostRangeIndex] = useState(0);
   const costRanges = ["Any Price", "₹5,000 - ₹50,000", "₹50,000 - ₹1,00,000", "₹1,00,000 - ₹5,00,000"];
+  
+  const [data, setData] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [drugName, setDrugName] = useState("");
+
+  useEffect(() => {
+    const urlParams = new URLSearchParams(window.location.search);
+    const drug = urlParams.get('drug') || 'Synaptic Fatigue Syndrome';
+    setDrugName(drug);
+
+    const fetchData = async () => {
+      try {
+        const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/timeline/${drug}`);
+        if(res.ok){
+          const json = await res.json();
+          setData(json);
+        }
+      } catch(e) {
+        console.error(e);
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchData();
+  }, []);
+
   return (
     <div className="px-6 lg:px-12 py-8 max-w-7xl mx-auto space-y-10">
       {/* Hero: Plain Language Summary */}
@@ -199,7 +225,7 @@ export default function CuraTreatment() {
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
               <div className="bg-surface-container-low rounded-2xl p-5">
                 <p className="text-xs text-on-surface-variant font-bold uppercase tracking-widest mb-2">Condition</p>
-                <p className="font-[Manrope] text-lg font-bold text-on-surface">Synaptic Fatigue Syndrome</p>
+                <p className="font-[Manrope] text-lg font-bold text-on-surface">{drugName}</p>
               </div>
               <div className="bg-surface-container-low rounded-2xl p-5">
                 <p className="text-xs text-on-surface-variant font-bold uppercase tracking-widest mb-2">Affected System</p>
