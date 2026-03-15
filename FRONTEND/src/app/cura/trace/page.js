@@ -1,4 +1,5 @@
-import FAB from "@/components/FAB";
+import Footer from "@/components/Footer";
+
 
 export default function CuraVoiceTrace() {
   return (
@@ -148,7 +149,8 @@ export default function CuraVoiceTrace() {
         </div>
       </section>
 
-      <FAB />
+
+
     </div>
   );
 }

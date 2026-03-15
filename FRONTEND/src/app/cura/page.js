@@ -1,12 +1,23 @@
 "use client";
 import { useState } from "react";
 import Footer from "@/components/Footer";
-import FAB from "@/components/FAB";
+import Footer from "@/components/Footer";
+
+import { useVapi } from "@/hooks/useVapi";
+import { useEffect } from "react";
 
 export default function CuraSearchDiscovery() {
   const [searchQuery, setSearchQuery] = useState("");
   const [isAnalyzing, setIsAnalyzing] = useState(false);
   const [error, setError] = useState("");
+  const { isListening, transcript, toggle, setTranscript } = useVapi();
+
+  useEffect(() => {
+    if (transcript) {
+      setSearchQuery(prev => prev + " " + transcript);
+      setTranscript(""); // Clear transcript after appending to prevent duplicate appends
+    }
+  }, [transcript, setTranscript]);
 
   const executeSearch = async (queryToSearch) => {
     if (!queryToSearch.trim()) return;
@@ -90,8 +101,15 @@ export default function CuraSearchDiscovery() {
                 disabled={isAnalyzing}
               />
               {/* Mic Icon */}
-              <button type="button" title="Voice Search" className="p-3 text-on-surface-variant hover:text-primary hover:bg-primary/10 rounded-full transition-colors flex items-center justify-center">
-                <span className="material-symbols-outlined text-xl" style={{ fontVariationSettings: "'FILL' 1" }}>mic</span>
+              <button 
+                type="button" 
+                onClick={toggle}
+                title="Voice Search" 
+                className={`p-3 rounded-full transition-all flex items-center justify-center ${isListening ? 'text-error animate-pulse bg-error/10' : 'text-on-surface-variant hover:text-primary hover:bg-primary/10'}`}
+              >
+                <span className="material-symbols-outlined text-xl" style={{ fontVariationSettings: "'FILL' 1" }}>
+                  {isListening ? 'mic_active' : 'mic'}
+                </span>
               </button>
               {/* Analyze Button */}
               <button 
@@ -242,7 +260,8 @@ export default function CuraSearchDiscovery() {
         </section>
       </main>
 
-      <FAB />
+
+
       <Footer brand="CURA" showSidePadding />
     </>
   );

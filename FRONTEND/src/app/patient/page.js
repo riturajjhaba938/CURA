@@ -1,6 +1,8 @@
 "use client";
 import { useState, useEffect } from "react";
 import Footer from "@/components/Footer";
+import { useVapi } from "@/hooks/useVapi";
+
 
 export default function PatientHome() {
   const [user, setUser] = useState(null);
@@ -8,6 +10,15 @@ export default function PatientHome() {
   const [isSearching, setIsSearching] = useState(false);
   const [searchResult, setSearchResult] = useState(null);
   const [searchError, setSearchError] = useState("");
+  const { isListening, transcript, toggle, setTranscript } = useVapi();
+
+  useEffect(() => {
+    if (transcript) {
+      setSearchQuery(prev => prev + " " + transcript);
+      setTranscript("");
+    }
+  }, [transcript, setTranscript]);
+
 
   useEffect(() => {
     const storedUser = localStorage.getItem("user");
@@ -53,6 +64,10 @@ export default function PatientHome() {
     await executeSearch(searchQuery);
   };
 
+  const startListening = async () => {
+    toggle();
+  };
+
   return (
     <>
       <main className="relative min-h-screen overflow-hidden">
@@ -94,10 +109,20 @@ export default function PatientHome() {
                   onChange={(e) => setSearchQuery(e.target.value)}
                   disabled={isSearching}
                 />
+                <button
+                  type="button"
+                  onClick={startListening}
+                  className={`p-3 rounded-full transition-all ${isListening ? 'text-error animate-pulse bg-error/10' : 'text-on-surface-variant hover:bg-surface-container-high'}`}
+                  title="Search by Voice"
+                >
+                  <span className="material-symbols-outlined">
+                    {isListening ? 'mic_active' : 'mic'}
+                  </span>
+                </button>
                 <button 
                   type="submit"
                   disabled={isSearching}
-                  className="bg-primary text-on-primary h-12 px-8 rounded-full font-medium hover:bg-primary-container transition-all disabled:opacity-70"
+                  className="bg-primary text-on-primary h-12 px-8 rounded-full font-medium hover:bg-primary-container transition-all disabled:opacity-70 ml-2"
                 >
                   {isSearching ? "Analyzing..." : "Analyze"}
                 </button>
@@ -204,8 +229,11 @@ export default function PatientHome() {
               <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-12 gap-4">
                 <h3 className="font-[Manrope] text-2xl font-semibold italic">Your Health Narrative</h3>
                 <div className="flex gap-2">
-                  <button className="px-4 py-2 bg-primary text-on-primary rounded-lg text-sm">Clinical View</button>
-                  <button className="px-4 py-2 bg-surface-container-high text-on-surface-variant rounded-lg text-sm">Patient Story</button>
+                  <button onClick={startListening} className="px-4 py-2 bg-primary text-on-primary rounded-lg text-sm flex items-center gap-2">
+                    <span className="material-symbols-outlined text-sm">mic</span>
+                    {isListening ? "Listening..." : "Tell your story"}
+                  </button>
+                  <button className="px-4 py-2 bg-surface-container-high text-on-surface-variant rounded-lg text-sm">Clinical View</button>
                 </div>
               </div>
               <div className="flex flex-col md:flex-row gap-8 items-stretch">
@@ -214,12 +242,23 @@ export default function PatientHome() {
                   <p className="mt-2 text-on-surface font-medium italic">
                     &quot;I noticed slight fatigue after lunch, but my oxygen levels remained steady at 98%.&quot;
                   </p>
+                  <div className="mt-4 flex items-center gap-2">
+                    <span className="px-2 py-0.5 bg-primary/10 text-primary text-[10px] font-bold rounded uppercase">
+                      Source: Reddit #abc123
+                    </span>
+                    <span className="text-[10px] text-on-surface-variant opacity-60">Verified Trace</span>
+                  </div>
                 </div>
                 <div className="flex-1 p-6 bg-surface-container-lowest rounded-2xl border-l-4 border-outline-variant">
                   <span className="text-[10px] font-bold text-on-surface-variant tracking-widest uppercase">March 14</span>
                   <p className="mt-2 text-on-surface-variant">
                     System note: Medication dosage adjusted. Patient reported improved sleep latency.
                   </p>
+                  <div className="mt-4 flex items-center gap-2">
+                    <span className="px-2 py-0.5 bg-secondary-container/30 text-secondary text-[10px] font-bold rounded uppercase">
+                      Source: FDA Report #7890
+                    </span>
+                  </div>
                 </div>
                 <div className="flex-1 p-6 bg-surface-container-lowest rounded-2xl border-l-4 border-outline-variant opacity-50">
                   <span className="text-[10px] font-bold text-on-surface-variant tracking-widest uppercase">Upcoming</span>

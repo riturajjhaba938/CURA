@@ -1,5 +1,5 @@
 "use client";
-import FAB from "@/components/FAB";
+import Footer from "@/components/Footer";
 import { useState } from "react";
 
 export default function CuraTimeline() {
@@ -252,7 +252,8 @@ export default function CuraTimeline() {
         </div>
       </main>
 
-      <FAB />
+
+
     </div>
   );
 }
