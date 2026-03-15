@@ -1,7 +1,6 @@
 "use client";
 import { useState } from "react";
 import Footer from "@/components/Footer";
-import Footer from "@/components/Footer";
 
 import { useVapi } from "@/hooks/useVapi";
 import { useEffect } from "react";
