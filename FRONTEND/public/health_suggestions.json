@@ -70,5 +70,53 @@
     "suggestion": "Take a short walk outdoors. Fresh air drastically improves focus and circulation.",
     "category": "activity",
     "priority": "normal"
+  },
+  {
+    "id": 13,
+    "suggestion": "Cut down on processed sugars to avoid energy crashes in the afternoon.",
+    "category": "diet",
+    "priority": "high"
+  },
+  {
+    "id": 14,
+    "suggestion": "Practice gratitude! Studies show writing down 3 things improves overall mood.",
+    "category": "mental_health",
+    "priority": "normal"
+  },
+  {
+    "id": 15,
+    "suggestion": "Staring at a wall 20 feet away for 20 seconds saves your vision. Do it now!",
+    "category": "lifestyle",
+    "priority": "high"
+  },
+  {
+    "id": 16,
+    "suggestion": "Did you know? Green tea contains L-theanine which improves focus and reduces anxiety.",
+    "category": "diet",
+    "priority": "normal"
+  },
+  {
+    "id": 17,
+    "suggestion": "If you're feeling sluggish, try drinking a cold glass of water right away.",
+    "category": "hydration",
+    "priority": "normal"
+  },
+  {
+    "id": 18,
+    "suggestion": "Time for a neck roll! Slowly rotate your neck to relieve tension.",
+    "category": "activity",
+    "priority": "normal"
+  },
+  {
+    "id": 19,
+    "suggestion": "Avoid blue light from screens at least one hour before you go to bed.",
+    "category": "sleep",
+    "priority": "high"
+  },
+  {
+    "id": 20,
+    "suggestion": "A quick 10-minute power nap can completely reboot your cognitive function.",
+    "category": "sleep",
+    "priority": "normal"
   }
 ]
