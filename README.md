@@ -77,14 +77,55 @@ CURA is a state-of-the-art medical platform designed to bridge the gap between p
 
 ---
 
-## **Technical Architecture**
+## **Technical Architecture (3D Layered View)**
 
-The project is architected as a decoupled full-stack application:
+<div align="center">
+  <img src="https://img.shields.io/badge/Frontend-Next.js%2014-blue?style=for-the-badge&logo=nextdotjs" />
+  <img src="https://img.shields.io/badge/Backend-Node.js%20Express-green?style=for-the-badge&logo=express" />
+  <img src="https://img.shields.io/badge/Database-MongoDB%20Atlas-black?style=for-the-badge&logo=mongodb" />
+</div>
 
-- **Frontend**: [Next.js](https://nextjs.org/) (App Router), Tailwind CSS, Recharts.
-- **Backend**: [Node.js](https://nodejs.org/) / Express, MongoDB Atlas (Mongoose).
-- **AI Layer**: Python-based scrapers and Node-integrated AI services (NER, PII-Masking, NLI).
-- **Infrastructure**: JWT Authentication, Express Rate Limit, Centralized Error Handling.
+<br/>
+
+```mermaid
+graph TD
+    subgraph CURA_STACK [3D ARCHITECTURAL STACK]
+    direction BT
+    
+    L3["<b>📦 LAYER 3: THE INTELLIGENCE (CORE)</b><br/>MongoDB Atlas • Bytez AI • OpenFDA API"]
+    L2["<b>⚙️ LAYER 2: THE LOGIC (ENGINE)</b><br/>Node.js • Express • JWT • Python Scripts"]
+    L1["<b>🖥️ LAYER 1: THE INTERFACE (GLASS)</b><br/>Next.js 14 • Tailwind CSS • Recharts"]
+    
+    L3 -.->|Structured Insights| L2
+    L2 -.->|Secure API Delivery| L1
+    end
+    
+    style L1 fill:#3b82f6,stroke:#1d4ed8,stroke-width:3px,color:#fff
+    style L2 fill:#10b981,stroke:#047857,stroke-width:3px,color:#fff
+    style L3 fill:#111827,stroke:#000,stroke-width:3px,color:#fff
+    style CURA_STACK fill:#f3f4f6,stroke:#d1d5db,stroke-dasharray: 5 5
+```
+
+### **🖥️ Layer 1: The Interface (Glass)**
+> **The user-facing "Glass" layer. Built for speed and accessibility.**
+- **Framework**: `Next.js 14` (App Router)
+- **Design System**: `Tailwind CSS` + `Lucide Icons`
+- **Data Viz**: `Recharts` (3D Line & Area Graphs)
+- **State**: `React Server Components`
+
+### **⚙️ Layer 2: The Logic (Engine)**
+> **The "Engine" layer. Managing security, data flow, and real-time processing.**
+- **Runtime**: `Node.js` (LTS)
+- **API Architecture**: `RESTful Express Server`
+- **Security**: `JWT Authentication` + `Bcrypt` + `Helmet`
+- **Rate Limiting**: `Express-Rate-Limit` (40 req/hr)
+
+### **📦 Layer 3: The Intelligence (Core)**
+> **The "Core" layer. Where raw text becomes medical insight.**
+- **AI Models**: `Bytez` (Biomedical NER, PII Redaction)
+- **Fact-Checking**: `OpenFDA API` + `Natural Language Inference`
+- **Scraping**: `Python 3.10` (Asynchronous Process Spawning)
+- **Storage**: `MongoDB Atlas` (Document Store)
 
 ---
 
