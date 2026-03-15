@@ -26,13 +26,13 @@ app.use(express.json());
 // Rate Limiting
 const authLimiter = rateLimit({
   windowMs: 15 * 60 * 1000, // 15 minutes
-  max: 20, // Limit each IP to 20 requests per window
+  max: 100, // Limit each IP to 100 requests per window (increased for demo)
   message: { error: "Too many requests from this IP, please try again after 15 minutes" }
 });
 
 const scrapeLimiter = rateLimit({
   windowMs: 60 * 60 * 1000, // 1 hour
-  max: 5, // Limit each IP to 5 scrape requests per hour
+  max: 40, // Limit each IP to 40 scrape requests per hour (increased for demo)
   message: { error: "Scrape limit exceeded. Please wait an hour before requesting again." }
 });
 
