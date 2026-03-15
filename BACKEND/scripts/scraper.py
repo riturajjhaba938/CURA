@@ -31,7 +31,7 @@ SUBREDDITS = [
     "Migraine", "Fibromyalgia", "diabetes",
     "Nootropics", "Supplements",
 ]
-
+ 
 # Quick mode: Only top 3 global subs for speed (~15-20 sec)
 QUICK_SUBREDDITS = [
     "askdocs", "ChronicPain", "depression",
