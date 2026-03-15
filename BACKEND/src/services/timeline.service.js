@@ -89,9 +89,11 @@ const getTimeline = async (drugName) => {
 
     for (const comment of comments) {
       const text = comment.text.toLowerCase();
+      let foundPattern = false;
 
       for (const { regex, label } of TIMELINE_PATTERNS) {
-        if (regex.test(comment.text)) {
+        if (regex.test(text)) {
+          foundPattern = true;
           if (!timelineMap[label]) {
             timelineMap[label] = {};
           }
@@ -100,6 +102,16 @@ const getTimeline = async (drugName) => {
             if (text.includes(symptom)) {
               timelineMap[label][symptom] = (timelineMap[label][symptom] || 0) + 1;
             }
+          }
+        }
+      }
+
+      // If no specific timeline pattern matches, bucket symptoms under "General"
+      if (!foundPattern) {
+        if (!timelineMap["General"]) timelineMap["General"] = {};
+        for (const symptom of SYMPTOM_KEYWORDS) {
+          if (text.includes(symptom)) {
+            timelineMap["General"][symptom] = (timelineMap["General"][symptom] || 0) + 1;
           }
         }
       }

@@ -96,7 +96,7 @@ export default function CuraTreatment() {
         <div className="col-span-12 lg:col-span-8 flex flex-col h-full">
           <ChronologicalTimeline 
             drugName={drugName}
-            timelineData={data?.timeline || [
+            timelineData={(data?.timeline && data.timeline.length > 0) ? data.timeline : [
               { week: "Day 1", symptom: "nausea", count: 18 },
               { week: "Day 1", symptom: "headache", count: 14 },
               { week: "Day 1", symptom: "fatigue", count: 22 },
