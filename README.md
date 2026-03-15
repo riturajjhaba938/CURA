@@ -92,18 +92,17 @@ graph TD
     subgraph CURA_STACK [3D ARCHITECTURAL STACK]
     direction BT
     
-    L3["<b>📦 LAYER 3: THE INTELLIGENCE (CORE)</b><br/>MongoDB Atlas • Bytez AI • OpenFDA API"]
-    L2["<b>⚙️ LAYER 2: THE LOGIC (ENGINE)</b><br/>Node.js • Express • JWT • Python Scripts"]
-    L1["<b>🖥️ LAYER 1: THE INTERFACE (GLASS)</b><br/>Next.js 14 • Tailwind CSS • Recharts"]
+    L3[📦 LAYER 3: THE INTELLIGENCE CORE]
+    L2[⚙️ LAYER 2: THE LOGIC ENGINE]
+    L1[🖥️ LAYER 1: THE INTERFACE GLASS]
     
-    L3 -.->|Structured Insights| L2
-    L2 -.->|Secure API Delivery| L1
+    L3 --- L2
+    L2 --- L1
     end
     
-    style L1 fill:#3b82f6,stroke:#1d4ed8,stroke-width:3px,color:#fff
-    style L2 fill:#10b981,stroke:#047857,stroke-width:3px,color:#fff
-    style L3 fill:#111827,stroke:#000,stroke-width:3px,color:#fff
-    style CURA_STACK fill:#f3f4f6,stroke:#d1d5db,stroke-dasharray: 5 5
+    style L1 fill:#3b82f6,stroke:#1d4ed8,stroke-width:2px,color:#fff
+    style L2 fill:#10b981,stroke:#047857,stroke-width:2px,color:#fff
+    style L3 fill:#111827,stroke:#000,stroke-width:2px,color:#fff
 ```
 
 ### **🖥️ Layer 1: The Interface (Glass)**
