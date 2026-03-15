@@ -196,12 +196,6 @@ export default function CuraDashboard() {
         </div>
       </div>
 
-      {/* View All Sources FAB */}
-      <button className="fixed bottom-10 left-1/2 -translate-x-1/2 z-50 flex items-center gap-3 px-8 h-14 bg-on-surface text-surface rounded-full shadow-2xl hover:scale-105 transition-transform active:scale-95 group">
-        <span className="material-symbols-outlined text-primary-fixed">list</span>
-        <span className="text-sm font-bold tracking-wide">View All Sources</span>
-        <div className="w-2 h-2 rounded-full bg-primary animate-pulse ml-2"></div>
-      </button>
     </div>
   );
 }
