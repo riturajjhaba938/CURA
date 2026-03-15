@@ -3,7 +3,6 @@
 set -e
 
 echo "=== Installing Node.js dependencies ==="
-cd BACKEND
 npm install
 
 echo "=== Installing Python dependencies for scraper ==="
