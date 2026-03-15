@@ -55,7 +55,13 @@ export default function HomePage() {
         body: JSON.stringify(payload),
       });
 
-      const result = await response.json();
+      let result;
+      const contentType = response.headers.get("content-type");
+      if (contentType && contentType.includes("application/json")) {
+        result = await response.json();
+      } else {
+        throw new Error("API returned an invalid response (not JSON). Please check your NEXT_PUBLIC_API_URL in Vercel.");
+      }
 
       if (!response.ok) {
         throw new Error(result.error || result.errors?.[0] || "Authentication failed");
