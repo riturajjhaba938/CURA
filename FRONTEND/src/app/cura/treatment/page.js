@@ -252,10 +252,15 @@ export default function CuraTreatment() {
               <p className="text-sm text-on-surface-variant">Specialized centers for Synaptic Fatigue Syndrome treatment</p>
             </div>
           </div>
-          <button className="px-5 py-2.5 bg-surface-container-high text-on-surface rounded-xl text-sm font-medium hover:bg-surface-container-highest transition-all flex items-center justify-center gap-2">
+          <a 
+            href={`https://maps.google.com/?q=${encodeURIComponent(`Hospitals for ${drugName} in ${userCity || ''}`)}`} 
+            target="_blank" 
+            rel="noopener noreferrer"
+            className="px-5 py-2.5 bg-surface-container-high text-on-surface rounded-xl text-sm font-medium hover:bg-surface-container-highest transition-all flex items-center justify-center gap-2"
+          >
             <span className="material-symbols-outlined text-lg leading-none">map</span>
             View on Map
-          </button>
+          </a>
         </div>
         <div className="flex flex-col md:flex-row gap-4 items-start md:items-center justify-between bg-surface-container-lowest p-5 rounded-2xl border border-outline-variant/10">
           <div className="flex items-center gap-2 text-on-surface-variant font-medium text-sm">
@@ -282,211 +287,255 @@ export default function CuraTreatment() {
           </div>
         </div>
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-          {[
-            {
-              name: "NeuroVita Specialty Hospital",
-              city: "Mumbai",
-              type: "Tertiary Care Hospital",
-              distance: "2.4 km",
-              rating: 4.8,
-              reviews: 1243,
-              specialty: "Neural Modulation & Rehabilitation",
-              doctor: "Dr. Vikram Mehra",
-              beds: 320,
-              cost: "₹₹₹",
-              whyRecommend: "Top-ranked for SFS treatment with a 92% patient satisfaction rate. Houses India's first dedicated neuro-modulation wing with FDA-approved pulse therapy equipment. Dr. Mehra has treated 400+ SFS cases.",
-              availability: "Next Available: Tomorrow, 10:30 AM",
-              tags: ["Gold Standard", "Insurance Accepted", "24/7 Neuro ICU"],
-              color: "primary",
-              phone: "+912245678901",
-              email: "contact@neurovita.in",
-              address: "124 Linking Road, Bandra West, Mumbai, Maharashtra 400050"
-            },
-            {
-              name: "MindBridge Clinical Center",
-              city: "Bangalore",
-              type: "Specialty Clinic",
-              distance: "5.1 km",
-              rating: 4.6,
-              reviews: 876,
-              specialty: "Cognitive & Neurological Diagnostics",
-              doctor: "Dr. Sunita Rao",
-              beds: 85,
-              cost: "₹₹",
-              whyRecommend: "Pioneered voice-trace based diagnostics in 2023. Research collaboration with AIIMS for SFS protocol development. Offers integrated AI-assisted treatment planning with 89% diagnostic accuracy.",
-              availability: "Next Available: March 16, 2:00 PM",
-              tags: ["Research Hub", "AI-Assisted", "Clinical Trials"],
-              color: "secondary",
-              phone: "+918023456789",
-              email: "info@mindbridge.clinic",
-              address: "45 MG Road, Bangalore, Karnataka 560001"
-            },
-            {
-              name: "Apollo Neuro Sciences",
-              city: "New Delhi",
-              type: "Multi-Specialty Hospital",
-              distance: "8.7 km",
-              rating: 4.5,
-              reviews: 2156,
-              specialty: "Comprehensive Neurological Care",
-              doctor: "Dr. Arvind Sharma",
-              beds: 600,
-              cost: "₹₹₹₹",
-              whyRecommend: "Largest neurology department in the region with 18 specialists. Offers end-to-end care from diagnosis to rehabilitation. 24/7 emergency referrals with dedicated stroke and neuro-ICU units.",
-              availability: "Next Available: March 15, 4:15 PM",
-              tags: ["Emergency Ready", "Multi-lingual Staff", "Rehab Center"],
-              color: "tertiary",
-              phone: "+911134567890",
-              email: "support@apollo-neuro.com",
-              address: "Apollo Hospital Sarita Vihar, Mathura Rd, Delhi 110076"
-            },
-            {
-              name: "Fortis Brain & Spine Institute",
-              city: "Chennai",
-              type: "Super-Specialty Hospital",
-              distance: "3.8 km",
-              rating: 4.7,
-              reviews: 1890,
-              specialty: "Neurosurgery & Neuro-Rehabilitation",
-              doctor: "Dr. Priya Nair",
-              beds: 450,
-              cost: "₹₹₹₹",
-              whyRecommend: "State-of-the-art robotic-assisted neurosurgery suite. Internationally trained team with experience in 2,000+ neuro-procedures. Partnered with Johns Hopkins for SFS clinical research protocol.",
-              availability: "Next Available: March 15, 11:00 AM",
-              tags: ["Robotic Surgery", "International Team", "NABH Accredited"],
-              color: "primary",
-              phone: "+914456789012",
-              email: "care@fortis-brain.in",
-              address: "Arcot Rd, Vadapalani, Chennai, Tamil Nadu 600026"
-            },
-            {
-              name: "Medanta NeuroCenter",
-              city: "Pune",
-              type: "Research Hospital",
-              distance: "12.3 km",
-              rating: 4.9,
-              reviews: 3420,
-              specialty: "Advanced Neuro-Diagnostics & Gene Therapy",
-              doctor: "Dr. Rajesh Kapoor",
-              beds: 1200,
-              cost: "₹₹₹₹₹",
-              whyRecommend: "#1 ranked neurology center nationally. Running India's only Phase-3 clinical trial for SFS gene therapy. Dr. Kapoor published the landmark SFS treatment protocol used globally. 96% patient satisfaction.",
-              availability: "Next Available: March 18, 9:00 AM",
-              tags: ["#1 National Rank", "Gene Therapy", "Phase-3 Trials", "Published Research"],
-              color: "secondary",
-              phone: "+912067890123",
-              email: "appointments@medantaneuro.com",
-              address: "Medanta The Medicity Area, Pune, Maharashtra 411014"
-            },
-            {
-              name: "Jaipur Neuro Wellness Clinic",
-              city: "Jaipur",
-              type: "Outpatient Clinic",
-              distance: "1.2 km",
-              rating: 4.3,
-              reviews: 542,
-              specialty: "Preventive Neurology & Wellness",
-              doctor: "Dr. Meera Joshi",
-              beds: 0,
-              cost: "₹",
-              whyRecommend: "Most affordable option for initial screening and ongoing monitoring. Walk-in friendly with no appointment needed for basic neuro-assessments. Ideal for follow-up visits and voice trace monitoring sessions.",
-              availability: "Walk-in Available Today",
-              tags: ["Budget Friendly", "Walk-in", "Near You", "Basic Screening"],
-              color: "tertiary",
-              phone: "+911417890123",
-              email: "hello@jaipurneuro.in",
-              address: "Tonk Rd, Gandhi Nagar, Jaipur, Rajasthan 302015"
-            },
-          ]
-          .filter(clinic => !userCity || clinic.city === userCity)
-          .filter(clinic => {
-            if (costRangeIndex === 0) return true;
-            const curLength = clinic.cost.length;
-            if (costRangeIndex === 1) return curLength <= 2;
-            if (costRangeIndex === 2) return curLength === 3;
-            if (costRangeIndex === 3) return curLength >= 4;
-            return true;
-          })
-          .map((clinic, i) => (
-            <div key={clinic.name} className="glass-card rounded-[2rem] p-8 flex flex-col justify-between antigravity-shadow hover:-translate-y-1 transition-transform group">
-              {/* Header */}
-              <div>
-                <div className="flex items-start justify-between mb-4">
-                  <div className={`w-12 h-12 rounded-2xl bg-${clinic.color === 'primary' ? 'primary' : clinic.color === 'secondary' ? 'secondary-container' : 'tertiary-fixed'} flex items-center justify-center flex-shrink-0 text-white`}>
-                    <span className={`material-symbols-outlined text-${clinic.color === 'primary' ? 'on-primary' : clinic.color === 'secondary' ? 'secondary' : 'tertiary'} text-2xl block leading-none`} style={{ fontVariationSettings: "'FILL' 1" }}>local_hospital</span>
-                  </div>
-                  <div className="flex items-center gap-1.5 bg-surface-container-high px-3 py-1.5 rounded-full shrink-0">
-                    <span className="w-4 h-4 flex items-center justify-center material-symbols-outlined text-amber-500 text-sm leading-none" style={{ fontVariationSettings: "'FILL' 1" }}>star</span>
-                    <span className="text-sm font-bold text-on-surface leading-none">{clinic.rating}</span>
-                    <span className="text-xs text-on-surface-variant leading-none">({clinic.reviews.toLocaleString()})</span>
-                  </div>
-                </div>
-                <h5 className="font-[Manrope] text-xl font-bold text-on-surface mb-1">{clinic.name}</h5>
-                <p className="text-sm text-on-surface-variant mb-1">{clinic.type} • {clinic.specialty}</p>
-                <div className="flex items-center gap-4 mb-4">
-                  <div className="flex items-center gap-1.5 text-primary text-sm font-medium">
-                    <span className="w-5 h-5 flex items-center justify-center material-symbols-outlined text-base leading-none">location_on</span>
-                    {clinic.distance} away
-                  </div>
-                  <span className="text-on-surface-variant text-xs">•</span>
-                  <span className="text-sm text-on-surface-variant">{clinic.cost}</span>
-                  {clinic.beds > 0 && (
-                    <>
-                      <span className="text-on-surface-variant text-xs">•</span>
-                      <span className="text-sm text-on-surface-variant">{clinic.beds} beds</span>
-                    </>
-                  )}
-                </div>
+          { (() => {
+            const allClinics = [
+              {
+                name: "NeuroVita Specialty Hospital",
+                city: "Mumbai",
+                type: "Tertiary Care Hospital",
+                distance: "2.4 km",
+                rating: 4.8,
+                reviews: 1243,
+                specialty: "Neural Modulation & Rehabilitation",
+                doctor: "Dr. Vikram Mehra",
+                beds: 320,
+                costNum: 45000,
+                coststr: "₹45,000",
+                whyRecommend: "Top-ranked for SFS treatment with a 92% patient satisfaction rate. Houses India's first dedicated neuro-modulation wing.",
+                availability: "Next Available: Tomorrow, 10:30 AM",
+                tags: ["Gold Standard", "Insurance Accepted", "24/7 Neuro ICU"],
+                color: "primary",
+                phone: "+912245678901",
+                email: "contact@neurovita.in",
+                address: "124 Linking Road, Bandra West, Mumbai, Maharashtra 400050"
+              },
+              {
+                name: "MindBridge Clinical Center",
+                city: "Bangalore",
+                type: "Specialty Clinic",
+                distance: "5.1 km",
+                rating: 4.6,
+                reviews: 876,
+                specialty: "Cognitive Diagnostics",
+                doctor: "Dr. Sunita Rao",
+                beds: 85,
+                costNum: 15000,
+                coststr: "₹15,000",
+                whyRecommend: "Pioneered voice-trace based diagnostics in 2023. Offers integrated AI-assisted treatment planning with 89% diagnostic accuracy.",
+                availability: "Next Available: March 16, 2:00 PM",
+                tags: ["Research Hub", "AI-Assisted", "Clinical Trials"],
+                color: "secondary",
+                phone: "+918023456789",
+                email: "info@mindbridge.clinic",
+                address: "45 MG Road, Bangalore, Karnataka 560001"
+              },
+              {
+                name: "Apollo Neuro Sciences",
+                city: "New Delhi",
+                type: "Multi-Specialty Hospital",
+                distance: "8.7 km",
+                rating: 4.5,
+                reviews: 2156,
+                specialty: "Neurological Care",
+                doctor: "Dr. Arvind Sharma",
+                beds: 600,
+                costNum: 150000,
+                coststr: "₹1,50,000",
+                whyRecommend: "Largest neurology department in the region with 18 specialists. Offers end-to-end care from diagnosis to rehabilitation.",
+                availability: "Next Available: March 15, 4:15 PM",
+                tags: ["Emergency Ready", "Multi-lingual Staff", "Rehab Center"],
+                color: "tertiary",
+                phone: "+911134567890",
+                email: "support@apollo-neuro.com",
+                address: "Apollo Hospital Sarita Vihar, Mathura Rd, Delhi 110076"
+              },
+              {
+                name: "Fortis Brain & Spine Institute",
+                city: "Chennai",
+                type: "Super-Specialty Hospital",
+                distance: "3.8 km",
+                rating: 4.7,
+                reviews: 1890,
+                specialty: "Neurosurgery",
+                doctor: "Dr. Priya Nair",
+                beds: 450,
+                costNum: 250000,
+                coststr: "₹2,50,000",
+                whyRecommend: "State-of-the-art robotic-assisted neurosurgery suite. Internationally trained team with experience in 2,000+ neuro-procedures.",
+                availability: "Next Available: March 15, 11:00 AM",
+                tags: ["Robotic Surgery", "International Team", "NABH Accredited"],
+                color: "primary",
+                phone: "+914456789012",
+                email: "care@fortis-brain.in",
+                address: "Arcot Rd, Vadapalani, Chennai, Tamil Nadu 600026"
+              },
+              {
+                name: "Medanta NeuroCenter",
+                city: "Pune",
+                type: "Research Hospital",
+                distance: "12.3 km",
+                rating: 4.9,
+                reviews: 3420,
+                specialty: "Advanced Gene Therapy",
+                doctor: "Dr. Rajesh Kapoor",
+                beds: 1200,
+                costNum: 480000,
+                coststr: "₹4,80,000",
+                whyRecommend: "#1 ranked neurology center nationally. Running India's only Phase-3 clinical trial for SFS gene therapy.",
+                availability: "Next Available: March 18, 9:00 AM",
+                tags: ["#1 National Rank", "Gene Therapy", "Phase-3 Trials"],
+                color: "secondary",
+                phone: "+912067890123",
+                email: "appointments@medantaneuro.com",
+                address: "Medanta Area, Pune, Maharashtra 411014"
+              },
+              {
+                name: "Jaipur Neuro Wellness Clinic",
+                city: "Jaipur",
+                type: "Outpatient Clinic",
+                distance: "1.2 km",
+                rating: 4.3,
+                reviews: 542,
+                specialty: "Preventive Neurology",
+                doctor: "Dr. Meera Joshi",
+                beds: 0,
+                costNum: 5500,
+                coststr: "₹5,500",
+                whyRecommend: "Most affordable option for initial screening and ongoing monitoring. Walk-in friendly with no appointment needed.",
+                availability: "Walk-in Available Today",
+                tags: ["Budget Friendly", "Walk-in", "Near You"],
+                color: "tertiary",
+                phone: "+911417890123",
+                email: "hello@jaipurneuro.in",
+                address: "Tonk Rd, Gandhi Nagar, Jaipur, Rajasthan 302015"
+              },
+              {
+                name: "Global Neurology Care",
+                city: userCity || "Local",
+                type: "Partner Clinic",
+                distance: "0.8 km",
+                rating: 4.4,
+                reviews: 312,
+                specialty: "General Neurology",
+                doctor: "Dr. A. Local",
+                beds: 20,
+                costNum: 8000,
+                coststr: "₹8,000",
+                whyRecommend: `Conveniently located in ${userCity || "your city"}. Great for regular checkups.`,
+                availability: "Next Available: Today",
+                tags: ["Local", "Partnership"],
+                color: "primary",
+                phone: "+919876543210",
+                email: "contact@globalneuro.in",
+                address: `Main Street, ${userCity || "Your City"} Center`
+              }
+            ];
 
-                {/* Lead Doctor */}
-                <div className="flex items-center gap-3 mb-5 p-3 bg-surface-container-low rounded-xl">
-                  <div className="w-9 h-9 rounded-full bg-primary-container flex items-center justify-center text-primary text-xs font-bold">
-                    {clinic.doctor.split(' ').slice(1).map(n => n[0]).join('')}
-                  </div>
-                  <div>
-                    <p className="text-sm font-semibold text-on-surface">{clinic.doctor}</p>
-                    <p className="text-[10px] text-on-surface-variant">Lead Specialist • {clinic.specialty.split(' ')[0]}</p>
-                  </div>
-                </div>
+            let filteredClinics = allClinics.filter(clinic => {
+              // 1. Geography filter - try to match userCity, if none match, we'll gracefully fallback later
+              const userCityLower = userCity ? userCity.toLowerCase() : "";
+              const clinicCityLower = clinic.city.toLowerCase();
+              let cityMatches = !userCity || clinicCityLower.includes(userCityLower) || userCityLower.includes(clinicCityLower);
+              // For demonstration if user has a wacky city, include at least the auto-generated one
+              if(clinic.name === "Global Neurology Care") cityMatches = true;
 
-                {/* Why We Recommend */}
-                <div className="bg-primary/5 rounded-2xl p-4 mb-5">
-                  <p className="text-xs font-bold text-primary uppercase tracking-widest mb-2">Why We Recommend</p>
-                  <p className="text-sm text-on-surface leading-relaxed">{clinic.whyRecommend}</p>
-                </div>
+              // 2. Cost filter logic
+              // costRanges = ["Any Price", "₹5,000 - ₹50,000", "₹50,000 - ₹1,00,000", "₹1,00,000 - ₹5,00,000"]
+              let costMatches = true;
+              if (costRangeIndex === 1) {
+                costMatches = clinic.costNum >= 5000 && clinic.costNum <= 50000;
+              } else if (costRangeIndex === 2) {
+                costMatches = clinic.costNum > 50000 && clinic.costNum <= 100000;
+              } else if (costRangeIndex === 3) {
+                costMatches = clinic.costNum > 100000 && clinic.costNum <= 500000;
+              }
 
-                {/* Tags */}
-                <div className="flex flex-wrap gap-2 mb-5">
-                  {clinic.tags.map((tag) => (
-                    <span key={tag} className="px-3 py-1 bg-surface-container-high rounded-full text-[10px] font-bold text-on-surface-variant uppercase tracking-wider">
-                      {tag}
+              return cityMatches && costMatches;
+            });
+
+            // Fallback: If strict city mapping hid everything, just show top national ones that fit the budget
+            if (filteredClinics.length === 0) {
+              filteredClinics = allClinics.filter(clinic => {
+                if (costRangeIndex === 1) return clinic.costNum >= 5000 && clinic.costNum <= 50000;
+                if (costRangeIndex === 2) return clinic.costNum > 50000 && clinic.costNum <= 100000;
+                if (costRangeIndex === 3) return clinic.costNum > 100000 && clinic.costNum <= 500000;
+                return true;
+              });
+            }
+
+            return filteredClinics.slice(0, 3).map((clinic) => (
+              <div key={clinic.name} className="glass-card rounded-[2rem] p-8 flex flex-col justify-between antigravity-shadow hover:-translate-y-1 transition-transform group">
+                <div className="flex-1">
+                  <div className="flex items-start justify-between mb-4">
+                    <div className={`w-12 h-12 rounded-2xl flex items-center justify-center flex-shrink-0 text-white ${
+                      clinic.color === 'primary' ? 'bg-primary text-on-primary' : 
+                      clinic.color === 'secondary' ? 'bg-secondary-container text-secondary' : 
+                      'bg-tertiary-fixed text-tertiary'
+                    }`}>
+                      <span className="material-symbols-outlined text-2xl" style={{ fontVariationSettings: "'FILL' 1" }}>local_hospital</span>
+                    </div>
+                    <div className="flex items-center gap-1.5 bg-surface-container-high px-3 py-1.5 rounded-full shrink-0">
+                      <span className="w-4 h-4 flex items-center justify-center material-symbols-outlined text-amber-500 text-sm" style={{ fontVariationSettings: "'FILL' 1" }}>star</span>
+                      <span className="text-sm font-bold text-on-surface">{clinic.rating}</span>
+                      <span className="text-xs text-on-surface-variant">({clinic.reviews.toLocaleString()})</span>
+                    </div>
+                  </div>
+                  <h5 className="font-[Manrope] text-xl font-bold text-on-surface mb-1">{clinic.name}</h5>
+                  <p className="text-sm text-on-surface-variant mb-1">{clinic.type} • {clinic.specialty}</p>
+                  
+                  <div className="flex items-center gap-2 mb-4 whitespace-nowrap overflow-x-auto scroller-hide pb-1">
+                    <div className="flex items-center gap-1.5 text-primary text-sm font-bold bg-primary/10 px-2 py-1 rounded-md shrink-0">
+                      <span className="material-symbols-outlined text-base">location_on</span>
+                      {clinic.distance} away
+                    </div>
+                    <span className="text-sm font-bold text-on-surface bg-surface-container-highest px-2 py-1 rounded-md shrink-0">
+                      {clinic.coststr}
                     </span>
-                  ))}
-                </div>
-              </div>
+                  </div>
 
-              {/* Footer */}
-              <div className="pt-5 border-t border-outline-variant/10">
-                <p className="text-xs text-on-surface-variant mb-4 flex items-center gap-1.5 font-medium">
-                  <span className="material-symbols-outlined text-primary text-sm">info</span>
-                  Contact Information
-                </p>
-                <div className="flex items-center justify-between gap-2">
-                  <a href={`tel:${clinic.phone}`} title="Call Clinic" className="flex-1 py-2.5 bg-surface-container-high hover:bg-surface-container-highest text-on-surface rounded-xl text-sm font-semibold transition-colors flex items-center justify-center gap-2 group/btn">
-                    <span className="w-5 h-5 flex items-center justify-center material-symbols-outlined text-base text-primary group-hover/btn:scale-110 transition-transform leading-none">call</span>
-                    Contact
-                  </a>
-                  <a href={`https://maps.google.com/?q=${encodeURIComponent(clinic.name + ' ' + clinic.address)}`} target="_blank" rel="noopener noreferrer" title="Get Directions" className="flex-1 py-2.5 bg-surface-container-high hover:bg-surface-container-highest text-on-surface rounded-xl text-sm font-semibold transition-colors flex items-center justify-center gap-2 group/btn">
-                    <span className="w-5 h-5 flex items-center justify-center material-symbols-outlined text-base text-secondary group-hover/btn:scale-110 transition-transform leading-none" style={{ fontVariationSettings: "'FILL' 1" }}>location_on</span>
-                    Location
-                  </a>
-                  <a href={`mailto:${clinic.email}`} title="Email Clinic" className="w-10 h-10 bg-surface-container-high hover:bg-surface-container-highest text-on-surface rounded-xl flex items-center justify-center transition-colors flex-shrink-0 group/btn">
-                    <span className="w-5 h-5 flex items-center justify-center material-symbols-outlined text-base text-tertiary group-hover/btn:scale-110 transition-transform leading-none">mail</span>
-                  </a>
+                  {/* Doctor Info */}
+                  <div className="flex items-center gap-3 mb-5 p-3 bg-surface-container-low rounded-xl">
+                    <div className="w-9 h-9 rounded-full bg-primary-container flex items-center justify-center text-primary text-xs font-bold shrink-0">
+                      {clinic.doctor.split(' ').slice(1).map(n => n[0]).join('')}
+                    </div>
+                    <div className="truncate">
+                      <p className="text-sm font-semibold text-on-surface truncate">{clinic.doctor}</p>
+                      <p className="text-[10px] text-on-surface-variant uppercase tracking-widest truncate">Lead Specialist</p>
+                    </div>
+                  </div>
+
+                  {/* Why Recommend */}
+                  <div className="bg-primary/5 rounded-2xl p-4 mb-5 border border-primary/10">
+                    <p className="text-[10px] font-bold text-primary uppercase tracking-widest mb-1.5">Why We Recommend</p>
+                    <p className="text-sm text-on-surface-variant leading-relaxed line-clamp-3">{clinic.whyRecommend}</p>
+                  </div>
+
+                  {/* Tags */}
+                  <div className="flex flex-wrap gap-2 mb-6">
+                    {clinic.tags.map((tag) => (
+                      <span key={tag} className="px-2.5 py-1 bg-surface-container-high rounded-lg text-[10px] font-bold text-on-surface-variant uppercase tracking-wide">
+                        {tag}
+                      </span>
+                    ))}
+                  </div>
+                </div>
+
+                {/* Footer Buttons */}
+                <div className="pt-5 border-t border-outline-variant/10 mt-auto">
+                  <div className="flex gap-2">
+                    <a href={`tel:${clinic.phone}`} className="flex-1 py-3 bg-surface-container-highest hover:bg-surface-container-highest/80 text-on-surface rounded-xl text-sm font-bold transition-all flex items-center justify-center gap-2 group/btn">
+                      <span className="material-symbols-outlined text-base text-primary group-hover/btn:scale-110 transition-transform">call</span>
+                      Contact
+                    </a>
+                    <a href={`https://maps.google.com/?q=${encodeURIComponent(clinic.name + ' ' + clinic.city)}`} target="_blank" rel="noopener noreferrer" className="flex-1 py-3 bg-surface-container-highest hover:bg-surface-container-highest/80 text-on-surface rounded-xl text-sm font-bold transition-all flex items-center justify-center gap-2 group/btn">
+                      <span className="material-symbols-outlined text-base text-secondary group-hover/btn:scale-110 transition-transform" style={{ fontVariationSettings: "'FILL' 1" }}>map</span>
+                      Directions
+                    </a>
+                  </div>
                 </div>
               </div>
-            </div>
-          ))}
+            ));
+          })() }
         </div>
 
         {/* Human Voice Traces / Extracted Entities */}
