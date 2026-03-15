@@ -111,21 +111,21 @@ export default function CuraNavbar() {
       setCurrentSuggestion(suggestions[index]);
       setShowPopup(true);
       
-      // Keep it on screen for 4 seconds, then hide it for 3 seconds (Totalling 7 seconds cycle)
+      // Keep it on screen for 3 seconds, then hide it
       timeout2 = setTimeout(() => {
         setShowPopup(false);
-      }, 4000);
+      }, 3000);
     };
 
     // Initial popup delay so it doesn't fire instantly on page load
     timeout1 = setTimeout(() => {
       runCycle();
       
-      // Start the repeating 7-second interval after the first popup cycle begins
+      // Start the repeating 5-second interval after the first popup cycle begins
       timeout3 = setInterval(() => {
         index = (index + 1) % suggestions.length;
         runCycle();
-      }, 7000);
+      }, 5000);
     }, 1000);
 
     // Cleanup all timers when the component unmounts (crucial for React Strict Mode)
